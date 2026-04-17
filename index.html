@@ -97,13 +97,37 @@ body {
   display:flex;
   flex-direction:column;
   overflow-y:auto;
+  overflow-x:hidden;
   border-right:1px solid rgba(255,255,255,.05);
+  transition:width .22s cubic-bezier(.4,0,.2,1);
 }
+.sidebar.collapsed { width:48px; }
+
+/* toggle button */
+.sb-toggle {
+  display:flex; align-items:center; justify-content:flex-end;
+  padding:10px 12px 4px;
+  flex-shrink:0;
+}
+.sidebar.collapsed .sb-toggle { justify-content:center; padding:10px 0 4px; }
+.sb-toggle-btn {
+  background:none; border:none; cursor:pointer;
+  color:rgba(255,255,255,.35); padding:4px; border-radius:5px;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .15s, background .15s;
+  flex-shrink:0;
+}
+.sb-toggle-btn:hover { color:rgba(255,255,255,.7); background:rgba(255,255,255,.07); }
+
 .sb-section {
   font-size:10px; font-weight:700; letter-spacing:1.8px;
   text-transform:uppercase; color:rgba(255,255,255,.25);
   padding:20px 18px 7px;
+  white-space:nowrap; overflow:hidden;
+  transition:opacity .15s, padding .22s;
 }
+.sidebar.collapsed .sb-section { opacity:0; padding-top:10px; padding-bottom:5px; pointer-events:none; }
+
 .sb-item {
   display:flex; align-items:center; gap:9px;
   padding:9px 18px;
@@ -113,6 +137,16 @@ body {
   border-left:3px solid transparent;
   transition:all .15s;
   user-select:none;
+  white-space:nowrap; overflow:hidden;
+}
+.sidebar.collapsed .sb-item {
+  padding:9px 0;
+  justify-content:center;
+  gap:0;
+  border-left:none;
+}
+.sidebar.collapsed .sb-item.active {
+  box-shadow:inset 3px 0 0 var(--c-terra);
 }
 .sb-item svg { flex-shrink:0; }
 .sb-item:hover { background:rgba(255,255,255,.06); color:rgba(255,255,255,.85); }
@@ -121,21 +155,35 @@ body {
   background:rgba(169,112,89,.18);
   border-left-color:var(--c-terra);
 }
+
+/* hide text labels when collapsed */
+.sb-item .sb-label { transition:opacity .15s; }
+.sidebar.collapsed .sb-item .sb-label { opacity:0; width:0; overflow:hidden; }
+
 .sb-badge {
   margin-left:auto;
   font-family:'DM Mono',monospace;
   font-size:10px; font-weight:700;
   padding:1px 6px; border-radius:20px;
+  transition:opacity .15s;
+  flex-shrink:0;
 }
+.sidebar.collapsed .sb-badge { opacity:0; width:0; padding:0; overflow:hidden; }
 .sb-badge.red { background:var(--c-red); color:white; }
 .sb-badge.amber { background:var(--c-amber); color:white; }
 .sb-badge.terra { background:var(--c-terra); color:white; }
-.sb-hr { height:1px; background:rgba(255,255,255,.07); margin:7px 18px; }
+
+.sb-hr { height:1px; background:rgba(255,255,255,.07); margin:7px 18px; transition:margin .22s; }
+.sidebar.collapsed .sb-hr { margin:7px 6px; }
+
 .sb-footer {
   margin-top:auto;
   padding:14px 18px;
   border-top:1px solid rgba(255,255,255,.07);
+  overflow:hidden;
+  transition:padding .22s;
 }
+.sidebar.collapsed .sb-footer { padding:14px 0; display:flex; justify-content:center; }
 .sb-user { display:flex; align-items:center; gap:9px; }
 .sb-avatar {
   width:28px; height:28px; border-radius:50%;
@@ -144,8 +192,10 @@ body {
   font-size:10px; font-weight:700; color:white; flex-shrink:0;
   letter-spacing:.5px;
 }
-.sb-uname { font-size:12px; font-weight:600; color:rgba(255,255,255,.7); }
-.sb-urole { font-size:10px; color:rgba(255,255,255,.3); margin-top:1px; }
+.sb-uname { font-size:12px; font-weight:600; color:rgba(255,255,255,.7); white-space:nowrap; transition:opacity .15s; }
+.sb-urole { font-size:10px; color:rgba(255,255,255,.3); margin-top:1px; white-space:nowrap; transition:opacity .15s; }
+.sidebar.collapsed .sb-uname,
+.sidebar.collapsed .sb-urole { opacity:0; width:0; overflow:hidden; }
 
 /* ══════════════ CONTENT ══════════════ */
 .content { flex:1; overflow-y:auto; background:var(--c-cream); }
@@ -583,39 +633,44 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
 <div class="shell">
 
   <!-- SIDEBAR -->
-  <nav class="sidebar">
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-toggle">
+      <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Colapsar menú">
+        <svg id="sb-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
     <div class="sb-section">Principal</div>
     <div class="sb-item active" data-page="dashboard" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
+      <span class="sb-label">Dashboard</span>
     </div>
     <div class="sb-item" data-page="clientes" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Clientes
+      <span class="sb-label">Clientes</span>
     </div>
     <div class="sb-item" data-page="echeqs" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-      ECHEQs
+      <span class="sb-label">ECHEQs</span>
       <span class="sb-badge amber">3</span>
     </div>
     <div class="sb-hr"></div>
     <div class="sb-section">Cobranzas</div>
     <div class="sb-item" data-page="deuda" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-      Gestión de deuda
+      <span class="sb-label">Gestión de deuda</span>
       <span class="sb-badge red">3</span>
     </div>
     <div class="sb-hr"></div>
     <div class="sb-section">WhatsApp</div>
     <div class="sb-item" data-page="chats" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Historial de chats
+      <span class="sb-label">Historial de chats</span>
     </div>
     <div class="sb-hr"></div>
     <div class="sb-section">Configuración</div>
     <div class="sb-item" data-page="bot" onclick="nav(this)">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V3"/><circle cx="12" cy="3" r="1"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg>
-      Instrucciones del bot
+      <span class="sb-label">Instrucciones del bot</span>
     </div>
     <div class="sb-footer">
       <div class="sb-user">
@@ -1411,6 +1466,18 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
 </div>
 
 <script>
+// ── Sidebar toggle ────────────────────────────────────────────────────────────
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var icon = document.getElementById('sb-toggle-icon');
+  var collapsed = sb.classList.toggle('collapsed');
+  if (collapsed) {
+    icon.innerHTML = '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>';
+  } else {
+    icon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+  }
+}
+
 // ── Navigation ───────────────────────────────────────────────────────────────
 function nav(el) {
   var page = el.dataset.page;
