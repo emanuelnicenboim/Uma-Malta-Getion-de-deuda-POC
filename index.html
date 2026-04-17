@@ -1079,10 +1079,26 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
           <h1 class="ph-title">Estado crediticio de clientes</h1>
           <p class="ph-desc">Visibilidad consolidada de límites, utilización y comportamiento de pago.</p>
         </div>
+        <!-- resumen -->
+        <div class="cards cards-4" style="margin-bottom:20px;">
+          <div class="card"><div class="card-stripe terra"></div><div class="card-label">Crédito total otorgado</div><div class="card-val sm">$4.350.000</div><div class="card-sub">7 clientes activos</div></div>
+          <div class="card"><div class="card-stripe amber"></div><div class="card-label">Utilización promedio</div><div class="card-val sm amber">56%</div><div class="card-sub">$2.286.000 en uso</div></div>
+          <div class="card"><div class="card-stripe red"></div><div class="card-label">En alerta o bloqueados</div><div class="card-val sm red">3</div><div class="card-sub">Requieren seguimiento</div></div>
+          <div class="card"><div class="card-stripe navy"></div><div class="card-label">DSO promedio cartera</div><div class="card-val sm">35d</div><div class="card-sub">vs objetivo 30d</div></div>
+        </div>
+
         <div class="tbl-wrap">
-          <div class="tbl-head">
-            <span class="tbl-title">Todos los clientes</span>
-            <span class="tbl-meta">7 clientes</span>
+          <div class="tbl-head" style="flex-wrap:wrap;gap:10px;">
+            <span class="tbl-title" id="clientes-tbl-title">Todos los clientes</span>
+            <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;">
+              <input id="clientes-search" type="text" placeholder="Buscar cliente…"
+                style="padding:5px 10px;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-family:'Nunito',sans-serif;font-size:12px;color:var(--c-txt);background:white;outline:none;width:160px;"
+                oninput="filterClientes()">
+              <button class="filter-btn active" id="fcl-todos"    onclick="filterClienteEstado('todos',this)">Todos</button>
+              <button class="filter-btn"         id="fcl-ok"      onclick="filterClienteEstado('ok',this)">Al día</button>
+              <button class="filter-btn"         id="fcl-alerta"  onclick="filterClienteEstado('alerta',this)">En alerta</button>
+              <button class="filter-btn"         id="fcl-bloq"    onclick="filterClienteEstado('bloq',this)">Bloqueados</button>
+            </div>
           </div>
           <table>
             <thead><tr>
@@ -2612,8 +2628,44 @@ function drawCashflowChart(){
     });
 
     rows.forEach(function(r){ tbody.appendChild(r); });
+    filterClientes(); // re-apply search/filter after sort
   }
 
+  // ── Client search + filter ───────────────────────────────────
+  var clienteEstadoFilter = 'todos';
+
+  function filterClienteEstado(estado, btn) {
+    clienteEstadoFilter = estado;
+    ['fcl-todos','fcl-ok','fcl-alerta','fcl-bloq'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    });
+    if (btn) btn.classList.add('active');
+    filterClientes();
+  }
+
+  function filterClientes() {
+    var search = (document.getElementById('clientes-search') || {}).value || '';
+    search = search.toLowerCase().trim();
+    var tbody = document.querySelector('#page-clientes table tbody');
+    if (!tbody) return;
+    var rows = tbody.querySelectorAll('tr');
+    var visible = 0;
+    rows.forEach(function(row) {
+      var nombre = (row.dataset.nombre || '').toLowerCase();
+      var estado = parseInt(row.dataset.estado || 0);
+      var matchSearch = !search || nombre.includes(search);
+      var matchEstado = clienteEstadoFilter === 'todos'
+        || (clienteEstadoFilter === 'ok'     && estado === 1)
+        || (clienteEstadoFilter === 'alerta' && estado === 2)
+        || (clienteEstadoFilter === 'bloq'   && estado === 3);
+      var show = matchSearch && matchEstado;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    var title = document.getElementById('clientes-tbl-title');
+    if (title) title.textContent = visible + ' cliente' + (visible !== 1 ? 's' : '');
+  }
 
 
   // ══════════════════════════════════════════════════════════════
