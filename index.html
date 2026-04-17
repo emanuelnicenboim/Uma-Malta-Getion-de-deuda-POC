@@ -610,9 +610,198 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   .msg-row.client { flex-direction:row; }
   .msg-row.bot,.msg-row.op,.msg-row.error { flex-direction:row-reverse; }
 
+/* ══════════════ AUTH SCREEN ══════════════ */
+#auth-screen {
+  position:fixed; inset:0; z-index:1000;
+  background:var(--c-espresso);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+}
+#app-shell { display:none; flex-direction:column; height:100vh; }
+#app-shell.authenticated { display:flex; }
+
+.auth-card {
+  background:var(--c-cream);
+  border-radius:14px;
+  padding:40px 44px;
+  width:100%; max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+  animation:fadeUp .25s ease;
+}
+.auth-logo-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:28px;
+}
+.auth-logo {
+  width:36px; height:36px; border-radius:8px;
+  background:var(--c-terra);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; font-size:14px; color:white;
+}
+.auth-brand { font-size:15px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--c-espresso); }
+.auth-title { font-size:22px; font-weight:900; color:var(--c-txt); margin-bottom:4px; }
+.auth-sub { font-size:13px; color:var(--c-muted); margin-bottom:24px; }
+
+.auth-field { margin-bottom:16px; }
+.auth-field label { display:block; font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--c-txt2); margin-bottom:6px; }
+.auth-input {
+  width:100%; padding:10px 13px;
+  border:1.5px solid var(--c-border);
+  border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif; font-size:14px; color:var(--c-txt);
+  background:white; outline:none; transition:border-color .15s;
+}
+.auth-input:focus { border-color:var(--c-terra); }
+.auth-input.error { border-color:var(--c-red); }
+
+.auth-error {
+  display:none; margin-top:5px;
+  font-size:11.5px; color:var(--c-red); font-weight:600;
+}
+.auth-error.show { display:block; }
+
+.auth-btn {
+  width:100%; padding:12px;
+  background:var(--c-espresso); color:white;
+  border:none; border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+  cursor:pointer; transition:background .15s; margin-top:4px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.auth-btn:hover { background:var(--c-terra); }
+.auth-btn:disabled { opacity:.6; cursor:not-allowed; }
+
+.auth-toggle { text-align:center; margin-top:18px; font-size:12.5px; color:var(--c-muted); }
+.auth-toggle a { color:var(--c-terra); font-weight:700; cursor:pointer; text-decoration:none; }
+.auth-toggle a:hover { text-decoration:underline; }
+
+.auth-demo-badge {
+  margin-top:20px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px; padding:10px 14px;
+  font-size:11px; color:rgba(255,255,255,.45); text-align:center; line-height:1.6;
+}
+.auth-demo-badge strong { color:rgba(255,255,255,.7); }
+
+/* Topbar user pill */
+.topbar-user {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:rgba(255,255,255,.65);
+}
+.topbar-user-avatar {
+  width:26px; height:26px; border-radius:50%;
+  background:var(--c-terra);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:white;
+}
+.topbar-logout {
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.55); font-family:'Nunito',sans-serif;
+  font-size:11px; font-weight:600; padding:4px 10px;
+  border-radius:20px; cursor:pointer; transition:all .15s;
+}
+.topbar-logout:hover { background:rgba(255,255,255,.15); color:white; }
+
+/* Session expired overlay */
+#session-expired {
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:rgba(30,42,66,.85); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center;
+}
+#session-expired.show { display:flex; }
+.expired-card {
+  background:var(--c-cream); border-radius:12px; padding:36px 40px;
+  text-align:center; max-width:340px; box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.expired-icon { font-size:32px; margin-bottom:12px; }
+.expired-title { font-size:18px; font-weight:900; color:var(--c-txt); margin-bottom:6px; }
+.expired-sub { font-size:13px; color:var(--c-muted); margin-bottom:20px; }
+
+/* Spinner */
+.spinner {
+  width:16px; height:16px; border:2px solid rgba(255,255,255,.3);
+  border-top-color:white; border-radius:50%;
+  animation:spin .6s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
+
+<!-- ═══════════════════ AUTH SCREEN ═══════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo-row">
+      <div class="auth-logo">U</div>
+      <span class="auth-brand">Uma Malta</span>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="auth-login-view">
+      <div class="auth-title">Bienvenido</div>
+      <div class="auth-sub">Ingresá para acceder al panel de crédito</div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input id="login-email" class="auth-input" type="email" placeholder="admin@demo.com" autocomplete="email">
+        <div class="auth-error" id="login-email-err">Ingresá un email válido</div>
+      </div>
+      <div class="auth-field">
+        <label>Contraseña</label>
+        <input id="login-pass" class="auth-input" type="password" placeholder="••••••••••" autocomplete="current-password">
+        <div class="auth-error" id="login-pass-err">La contraseña es requerida</div>
+      </div>
+      <div class="auth-error" id="login-cred-err" style="margin-bottom:10px">Email o contraseña incorrectos</div>
+      <button class="auth-btn" id="login-btn" onclick="doLogin()">
+        <span id="login-btn-label">Ingresar</span>
+      </button>
+      <div class="auth-toggle">¿No tenés cuenta? <a onclick="showAuthView('register')">Registrate</a></div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="auth-register-view" style="display:none">
+      <div class="auth-title">Crear cuenta</div>
+      <div class="auth-sub">Registrate para acceder al panel</div>
+      <div class="auth-field">
+        <label>Nombre completo</label>
+        <input id="reg-name" class="auth-input" type="text" placeholder="Tu nombre">
+        <div class="auth-error" id="reg-name-err">El nombre es requerido</div>
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input id="reg-email" class="auth-input" type="email" placeholder="tu@email.com">
+        <div class="auth-error" id="reg-email-err">Ingresá un email válido</div>
+      </div>
+      <div class="auth-field">
+        <label>Contraseña</label>
+        <input id="reg-pass" class="auth-input" type="password" placeholder="Mínimo 6 caracteres">
+        <div class="auth-error" id="reg-pass-err">Mínimo 6 caracteres</div>
+      </div>
+      <button class="auth-btn" id="reg-btn" onclick="doRegister()">
+        <span id="reg-btn-label">Crear cuenta</span>
+      </button>
+      <div class="auth-toggle">¿Ya tenés cuenta? <a onclick="showAuthView('login')">Ingresá</a></div>
+    </div>
+  </div>
+
+  <div class="auth-demo-badge">
+    <strong>Demo segura para validación comercial</strong><br>
+    Este acceso está protegido · Solo usuarios autorizados<br>
+    <span style="font-size:10px;opacity:.6">usuario: admin@demo.com · contraseña: 123456789</span>
+  </div>
+</div>
+
+<!-- SESSION EXPIRED -->
+<div id="session-expired">
+  <div class="expired-card">
+    <div class="expired-icon">🔒</div>
+    <div class="expired-title">Sesión expirada</div>
+    <div class="expired-sub">Tu sesión cerró por inactividad. Ingresá nuevamente para continuar.</div>
+    <button class="auth-btn" onclick="goToLogin()">Volver al login</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP SHELL ═══════════════════ -->
+<div id="app-shell">
 
 <!-- ═══════════════════ TOPBAR ═══════════════════ -->
 <header class="topbar">
@@ -626,6 +815,11 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   <div class="topbar-right">
     <span class="topbar-meta">Datos de ejemplo · Prototipo v1</span>
     <span class="proto-badge">Prototipo</span>
+    <div class="topbar-user">
+      <div class="topbar-user-avatar" id="topbar-avatar">AC</div>
+      <span id="topbar-username" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button class="topbar-logout" onclick="doLogout()">Cerrar sesión</button>
+    </div>
   </div>
 </header>
 
@@ -636,7 +830,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   <nav class="sidebar" id="sidebar">
     <div class="sb-toggle">
       <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Colapsar menú">
-        <svg id="sb-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg id="sb-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
       </button>
     </div>
     <div class="sb-section">Principal</div>
@@ -1459,6 +1653,8 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   </main>
 </div><!-- /shell -->
 
+</div><!-- /app-shell -->
+
 <!-- TOAST -->
 <div class="toast" id="toast">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1466,15 +1662,175 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
 </div>
 
 <script>
+// ── Auth ──────────────────────────────────────────────────────────────────────
+var DEMO_USERS = [{ email:'admin@demo.com', pass:'123456789', name:'Admin Demo' }];
+var SESSION_KEY = 'uma_auth';
+var SESSION_TTL = 8 * 60 * 60 * 1000; // 8 horas
+
+function getSession() {
+  try {
+    var s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+    if (!s) return null;
+    if (Date.now() - s.ts > SESSION_TTL) { localStorage.removeItem(SESSION_KEY); return null; }
+    return s;
+  } catch(e) { return null; }
+}
+
+function saveSession(user) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ email:user.email, name:user.name, ts:Date.now() }));
+}
+
+function initAuth() {
+  var s = getSession();
+  if (s) {
+    showApp(s);
+  } else {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app-shell').style.display = 'none';
+  }
+}
+
+function showApp(session) {
+  document.getElementById('auth-screen').style.display = 'none';
+  var shell = document.getElementById('app-shell');
+  shell.style.display = 'flex';
+  shell.classList.add('authenticated');
+  var initials = (session.name || session.email).split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
+  document.getElementById('topbar-avatar').textContent = initials;
+  document.getElementById('topbar-username').textContent = session.name || session.email;
+  // render charts now that the shell is visible
+  setTimeout(function() { drawDSOChart(); drawCashflowChart(); }, 50);
+}
+
+function showAuthView(view) {
+  document.getElementById('auth-login-view').style.display    = view==='login'    ? 'block' : 'none';
+  document.getElementById('auth-register-view').style.display = view==='register' ? 'block' : 'none';
+  clearAuthErrors();
+}
+
+function clearAuthErrors() {
+  document.querySelectorAll('.auth-error').forEach(function(e){ e.classList.remove('show'); });
+  document.querySelectorAll('.auth-input').forEach(function(i){ i.classList.remove('error'); });
+}
+
+function setLoading(btnId, labelId, loading) {
+  var btn = document.getElementById(btnId);
+  var lbl = document.getElementById(labelId);
+  btn.disabled = loading;
+  lbl.innerHTML = loading ? '<div class="spinner"></div>' : (btnId==='login-btn' ? 'Ingresar' : 'Crear cuenta');
+}
+
+function doLogin() {
+  clearAuthErrors();
+  var email = document.getElementById('login-email').value.trim();
+  var pass  = document.getElementById('login-pass').value;
+  var valid = true;
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('login-email').classList.add('error');
+    document.getElementById('login-email-err').classList.add('show');
+    valid = false;
+  }
+  if (!pass) {
+    document.getElementById('login-pass').classList.add('error');
+    document.getElementById('login-pass-err').classList.add('show');
+    valid = false;
+  }
+  if (!valid) return;
+
+  setLoading('login-btn','login-btn-label',true);
+  setTimeout(function() {
+    var user = DEMO_USERS.find(function(u){ return u.email===email && u.pass===pass; });
+    if (user) {
+      saveSession(user);
+      showApp({ email:user.email, name:user.name });
+    } else {
+      setLoading('login-btn','login-btn-label',false);
+      document.getElementById('login-cred-err').classList.add('show');
+      document.getElementById('login-email').classList.add('error');
+      document.getElementById('login-pass').classList.add('error');
+    }
+  }, 800);
+}
+
+function doRegister() {
+  clearAuthErrors();
+  var name  = document.getElementById('reg-name').value.trim();
+  var email = document.getElementById('reg-email').value.trim();
+  var pass  = document.getElementById('reg-pass').value;
+  var valid = true;
+
+  if (!name) {
+    document.getElementById('reg-name').classList.add('error');
+    document.getElementById('reg-name-err').classList.add('show');
+    valid = false;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('reg-email').classList.add('error');
+    document.getElementById('reg-email-err').classList.add('show');
+    valid = false;
+  }
+  if (pass.length < 6) {
+    document.getElementById('reg-pass').classList.add('error');
+    document.getElementById('reg-pass-err').classList.add('show');
+    valid = false;
+  }
+  if (!valid) return;
+
+  setLoading('reg-btn','reg-btn-label',true);
+  setTimeout(function() {
+    var newUser = { email:email, pass:pass, name:name };
+    DEMO_USERS.push(newUser);
+    saveSession(newUser);
+    showApp({ email:email, name:name });
+  }, 800);
+}
+
+function doLogout() {
+  localStorage.removeItem(SESSION_KEY);
+  document.getElementById('app-shell').classList.remove('authenticated');
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  showAuthView('login');
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+function goToLogin() {
+  document.getElementById('session-expired').classList.remove('show');
+  doLogout();
+}
+
+// Enter key on login/register
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var loginView = document.getElementById('auth-login-view');
+  var regView   = document.getElementById('auth-register-view');
+  if (loginView && loginView.style.display !== 'none' &&
+      (document.activeElement === document.getElementById('login-email') ||
+       document.activeElement === document.getElementById('login-pass'))) {
+    doLogin();
+  }
+  if (regView && regView.style.display !== 'none' &&
+      (document.activeElement === document.getElementById('reg-name') ||
+       document.activeElement === document.getElementById('reg-email') ||
+       document.activeElement === document.getElementById('reg-pass'))) {
+    doRegister();
+  }
+});
+
+// Init on load
+initAuth();
+
 // ── Sidebar toggle ────────────────────────────────────────────────────────────
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
   var icon = document.getElementById('sb-toggle-icon');
   var collapsed = sb.classList.toggle('collapsed');
   if (collapsed) {
-    icon.innerHTML = '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>';
-  } else {
     icon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+  } else {
+    icon.innerHTML = '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
   }
 }
 
@@ -1845,7 +2201,7 @@ function toggleTag(btn) {
 
 
 // ▸ CHART 2: DSO Trend — cartera + clientes problemáticos (canvas line chart)
-(function(){
+function drawDSOChart(){
   var canvas = document.getElementById('dso-chart');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
@@ -1975,11 +2331,11 @@ function toggleTag(btn) {
   var lastAvgIdx = dsoAvg.length - 1;
   ctx.fillStyle = '#AA7059'; ctx.font = '700 10px "Nunito", sans-serif'; ctx.textAlign = 'left';
   ctx.fillText('Promedio cartera', xPos(lastAvgIdx) + 10, yPos(dsoAvg[lastAvgIdx]) + 3);
-})();
+}
 
 
 // ▸ CHART 3: Cash Flow — Cobrado vs Esperado (canvas, grouped bars)
-(function(){
+function drawCashflowChart(){
   var canvas = document.getElementById('cashflow-chart');
   if (!canvas) return;
   var ctx = canvas.getContext('2d');
@@ -2150,7 +2506,7 @@ function toggleTag(btn) {
     c.quadraticCurveTo(x, y, x + r, y);
     c.closePath();
   }
-})();
+}
 
   // ── Bot mode toggle ─────────────────────────────────────────────────────────
   var BOT_MODES = {
