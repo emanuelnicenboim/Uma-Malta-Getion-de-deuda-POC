@@ -1,0 +1,2467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uma Malta · Panel de Crédito</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS (alineados con brandbook Uma Malta) ── */
+:root {
+  --c-espresso:  #1E2A42;
+  --c-sidebar:   #172236;
+  --c-terra:     #AA7059;
+  --c-terra-dk:  #642F01;
+  --c-cream:     #F0E6D8;
+  --c-warm:      #F5EDE3;
+  --c-warm2:     #EDE0D2;
+  --c-border:    #DDD0C0;
+  --c-txt:       #1E2A42;
+  --c-txt2:      #5C4840;
+  --c-muted:     #989898;
+  --c-navy:      #163B61;
+  --c-green:     #4B9C45;
+  --c-green-bg:  #EAF4E9;
+  --c-amber:     #F19F20;
+  --c-amber-bg:  #FEF3DB;
+  --c-red:       #721210;
+  --c-red-bg:    #F5E0DF;
+  --c-blue-bg:   #E0EBF5;
+  --radius:      10px;
+  --radius-sm:   6px;
+  --shadow:      0 1px 4px rgba(30,42,66,.07);
+  --shadow-md:   0 4px 16px rgba(30,42,66,.10);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { font-size:14px; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:var(--c-cream);
+  color:var(--c-txt);
+  line-height:1.5;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ══════════════ TOPBAR ══════════════ */
+.topbar {
+  height:52px;
+  background:var(--c-espresso);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  flex-shrink:0;
+  z-index:100;
+}
+.topbar-brand { display:flex; align-items:center; gap:10px; }
+.topbar-logo {
+  width:30px; height:30px;
+  background:var(--c-terra);
+  border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Nunito',sans-serif; font-weight:900;
+  font-size:13px; font-weight:700; color:white;
+}
+.topbar-name {
+  font-size:13px; font-weight:600; letter-spacing:2px;
+  text-transform:uppercase; color:white;
+}
+.topbar-sub {
+  font-size:11px; color:rgba(255,255,255,.4);
+  letter-spacing:.5px; text-transform:uppercase; margin-left:4px;
+}
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.topbar-meta {
+  font-size:11px; color:rgba(255,255,255,.4);
+  font-family:'DM Mono',monospace;
+}
+.proto-badge {
+  background:var(--c-terra);
+  color:white; font-size:10px; font-weight:700;
+  letter-spacing:1px; text-transform:uppercase;
+  padding:3px 9px; border-radius:20px;
+}
+
+/* ══════════════ SHELL ══════════════ */
+.shell { display:flex; flex:1; overflow:hidden; }
+
+/* ══════════════ SIDEBAR ══════════════ */
+.sidebar {
+  width:210px;
+  flex-shrink:0;
+  background:var(--c-sidebar);
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  border-right:1px solid rgba(255,255,255,.05);
+}
+.sb-section {
+  font-size:10px; font-weight:700; letter-spacing:1.8px;
+  text-transform:uppercase; color:rgba(255,255,255,.25);
+  padding:20px 18px 7px;
+}
+.sb-item {
+  display:flex; align-items:center; gap:9px;
+  padding:9px 18px;
+  font-size:13px; font-weight:500;
+  color:rgba(255,255,255,.52);
+  cursor:pointer;
+  border-left:3px solid transparent;
+  transition:all .15s;
+  user-select:none;
+}
+.sb-item svg { flex-shrink:0; }
+.sb-item:hover { background:rgba(255,255,255,.06); color:rgba(255,255,255,.85); }
+.sb-item.active {
+  color:white; font-weight:600;
+  background:rgba(169,112,89,.18);
+  border-left-color:var(--c-terra);
+}
+.sb-badge {
+  margin-left:auto;
+  font-family:'DM Mono',monospace;
+  font-size:10px; font-weight:700;
+  padding:1px 6px; border-radius:20px;
+}
+.sb-badge.red { background:var(--c-red); color:white; }
+.sb-badge.amber { background:var(--c-amber); color:white; }
+.sb-badge.terra { background:var(--c-terra); color:white; }
+.sb-hr { height:1px; background:rgba(255,255,255,.07); margin:7px 18px; }
+.sb-footer {
+  margin-top:auto;
+  padding:14px 18px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.sb-user { display:flex; align-items:center; gap:9px; }
+.sb-avatar {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--c-terra);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:white; flex-shrink:0;
+  letter-spacing:.5px;
+}
+.sb-uname { font-size:12px; font-weight:600; color:rgba(255,255,255,.7); }
+.sb-urole { font-size:10px; color:rgba(255,255,255,.3); margin-top:1px; }
+
+/* ══════════════ CONTENT ══════════════ */
+.content { flex:1; overflow-y:auto; background:var(--c-cream); }
+.page { display:none; }
+.page.active { display:block; animation:fadeUp .2s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.inner { max-width:1080px; margin:0 auto; padding:28px 24px 48px; }
+
+/* ── Page header ── */
+.ph-label {
+  font-size:10.5px; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--c-muted); margin-bottom:5px;
+}
+.ph-title {
+  font-family:'Nunito',sans-serif; font-weight:900;
+  font-size:26px; letter-spacing:-.4px; color:var(--c-txt); line-height:1.2;
+}
+.ph-desc { font-size:13px; color:var(--c-txt2); font-weight:300; margin-top:4px; }
+.ph { margin-bottom:26px; }
+
+/* ── Cards ── */
+.cards { display:grid; gap:14px; }
+.cards-4 { grid-template-columns:repeat(4,1fr); }
+.cards-3 { grid-template-columns:repeat(3,1fr); }
+.cards-2 { grid-template-columns:repeat(2,1fr); }
+
+.card {
+  background:var(--c-cream);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  padding:18px 20px;
+  box-shadow:var(--shadow);
+  position:relative; overflow:hidden;
+}
+.card-stripe { position:absolute; top:0; left:0; right:0; height:3px; }
+.card-stripe.terra { background:var(--c-terra); }
+.card-stripe.red { background:var(--c-red); }
+.card-stripe.amber { background:var(--c-amber); }
+.card-stripe.green { background:var(--c-green); }
+.card-stripe.navy { background:var(--c-navy); }
+
+.card-label {
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--c-muted); margin-bottom:9px;
+}
+.card-val {
+  font-family:'Nunito',sans-serif; font-weight:900;
+  font-size:28px; letter-spacing:-1px; color:var(--c-txt); line-height:1;
+}
+.card-val.sm { font-size:22px; }
+.card-val.red { color:var(--c-red); }
+.card-val.amber { color:var(--c-amber); }
+.card-val.green { color:var(--c-green); }
+.card-sub { font-size:11.5px; color:var(--c-muted); margin-top:5px; }
+.card-delta {
+  display:inline-flex; align-items:center; gap:3px;
+  font-size:11px; font-weight:600; margin-top:5px;
+}
+.card-delta.bad { color:var(--c-red); }
+.card-delta.good { color:var(--c-green); }
+.card-delta.neutral { color:var(--c-muted); }
+
+/* ── Table shell ── */
+.tbl-wrap {
+  background:var(--c-cream);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin-top:16px;
+}
+.tbl-head {
+  padding:14px 18px 11px;
+  border-bottom:1px solid var(--c-border);
+  display:flex; align-items:center;
+  justify-content:space-between; gap:10px;
+  background:var(--c-warm2);
+}
+.tbl-title { font-size:13px; font-weight:700; color:var(--c-txt); }
+.tbl-meta {
+  font-size:11px; font-family:'DM Mono',monospace;
+  color:var(--c-muted); background:var(--c-warm);
+  padding:2px 8px; border-radius:20px;
+}
+table { width:100%; border-collapse:collapse; }
+thead th {
+  padding:9px 18px; text-align:left;
+  font-size:10px; font-weight:700;
+  letter-spacing:1px; text-transform:uppercase;
+  color:var(--c-muted); background:var(--c-warm2);
+  border-bottom:1px solid var(--c-border);
+}
+tbody tr { border-bottom:1px solid var(--c-border); transition:background .1s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--c-warm); }
+tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
+.mono { font-family:'DM Mono',monospace; font-size:12.5px; }
+.fw { font-weight:600; }
+
+/* ── Badges ── */
+.badge {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:2px 9px; border-radius:20px;
+  font-size:11px; font-weight:600; letter-spacing:.2px; white-space:nowrap;
+}
+.badge::before { content:''; width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+.b-ok   { background:var(--c-green-bg); color:var(--c-green);  } .b-ok::before   { background:var(--c-green); }
+.b-warn { background:var(--c-amber-bg); color:var(--c-amber);  } .b-warn::before { background:var(--c-amber); }
+.b-red  { background:var(--c-red-bg);   color:var(--c-red);    } .b-red::before  { background:var(--c-red);   }
+.b-info { background:var(--c-blue-bg);  color:var(--c-navy);   } .b-info::before { background:var(--c-navy);  }
+.b-terra{ background:#F5E9DF;           color:var(--c-terra-dk);} .b-terra::before{ background:var(--c-terra);}
+
+/* ── Progress ── */
+.prog-wrap { display:flex; align-items:center; gap:9px; }
+.prog-track { flex:1; height:6px; background:var(--c-warm2); border-radius:3px; overflow:hidden; }
+.prog-fill  { height:100%; border-radius:3px; }
+.prog-fill.ok    { background:var(--c-green); }
+.prog-fill.warn  { background:var(--c-amber); }
+.prog-fill.full  { background:var(--c-red); }
+.prog-pct { font-family:'DM Mono',monospace; font-size:11px; color:var(--c-txt2); width:34px; text-align:right; flex-shrink:0; }
+
+/* ── Buttons ── */
+.btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif;
+  font-size:12px; font-weight:600;
+  cursor:pointer; border:none; transition:all .15s;
+}
+.btn-primary { background:var(--c-espresso); color:white; }
+.btn-primary:hover { background:var(--c-terra); }
+.btn-ghost { background:transparent; color:var(--c-txt2); border:1px solid var(--c-border); }
+.btn-ghost:hover { background:var(--c-warm2); color:var(--c-txt); }
+.btn-link {
+  background:none; border:none;
+  color:var(--c-terra); font-size:12px; font-weight:600;
+  cursor:pointer; font-family:'Nunito',sans-serif;
+  display:inline-flex; align-items:center; gap:4px; padding:0;
+}
+.btn-link:hover { text-decoration:underline; }
+.btn-sent { background:var(--c-green-bg) !important; color:var(--c-green) !important; cursor:default !important; }
+
+/* ── Section card ── */
+.sec-card {
+  background:var(--c-cream);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  margin-top:16px;
+}
+.sec-card-head {
+  padding:12px 18px;
+  border-bottom:1px solid var(--c-border);
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--c-warm2);
+  border-left:3px solid var(--c-terra);
+}
+.sec-card-title {
+  font-size:11px; font-weight:700; letter-spacing:.8px;
+  text-transform:uppercase; color:var(--c-txt2);
+}
+.sec-card-meta { font-size:11px; font-family:'DM Mono',monospace; color:var(--c-muted); }
+.sec-body { padding:18px 20px; }
+
+/* ── Toggles ── */
+.toggle { position:relative; width:36px; height:20px; flex-shrink:0; }
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0;
+  background:var(--c-border); border-radius:20px;
+  cursor:pointer; transition:background .2s;
+}
+.toggle-slider::before {
+  content:''; position:absolute;
+  width:14px; height:14px; left:3px; top:3px;
+  background:white; border-radius:50%; transition:transform .2s;
+}
+.toggle input:checked + .toggle-slider { background:var(--c-terra); }
+.toggle input:checked + .toggle-slider::before { transform:translateX(16px); }
+
+/* ── Setting row ── */
+.setting-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 0; border-bottom:1px solid var(--c-warm2);
+}
+.setting-row:last-child { border-bottom:none; }
+.setting-label { font-size:13px; font-weight:500; color:var(--c-txt); }
+.setting-desc  { font-size:11px; color:var(--c-muted); margin-top:2px; }
+.setting-select {
+  font-family:'Nunito',sans-serif;
+  font-size:12px; font-weight:500;
+  padding:5px 10px; border-radius:var(--radius-sm);
+  border:1px solid var(--c-border);
+  background:var(--c-warm2); color:var(--c-txt);
+  cursor:pointer; outline:none;
+}
+.setting-select:focus { border-color:var(--c-terra); }
+
+/* ── Chart ── */
+.chart-container { padding:20px; }
+.chart-bars { display:flex; align-items:flex-end; gap:8px; height:140px; }
+.chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.chart-bar {
+  width:100%; border-radius:4px 4px 0 0;
+  transition:opacity .15s; cursor:pointer; position:relative;
+}
+.chart-bar:hover { opacity:.8; }
+.chart-bar.past { background:var(--c-warm2); }
+.chart-bar.vencida { background:var(--c-red); }
+.chart-bar.proxima { background:var(--c-amber); }
+.chart-bar.futura { background:var(--c-terra); opacity:.6; }
+.chart-bar.cobrada { background:var(--c-green); }
+.chart-label { font-size:10px; color:var(--c-muted); text-align:center; white-space:nowrap; }
+.chart-val { font-size:10px; font-family:'DM Mono',monospace; color:var(--c-txt2); text-align:center; }
+.chart-legend {
+  display:flex; gap:16px; margin-top:14px; padding-top:14px;
+  border-top:1px solid var(--c-border); flex-wrap:wrap;
+}
+.chart-legend-item {
+  display:flex; align-items:center; gap:5px;
+  font-size:11px; color:var(--c-muted);
+}
+.chart-legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+/* ── Timeline ── */
+.tl-grid { padding:20px; overflow-x:auto; }
+.tl-months { display:flex; margin-left:148px; margin-bottom:8px; min-width:600px; }
+.tl-month { flex:1; font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--c-muted); text-align:center; }
+.tl-row { display:flex; align-items:center; margin-bottom:12px; min-width:748px; }
+.tl-row:last-child { margin-bottom:0; }
+.tl-client { width:148px; flex-shrink:0; font-size:12px; font-weight:600; color:var(--c-txt); padding-right:10px; }
+.tl-track { flex:1; height:26px; background:var(--c-warm2); border-radius:4px; position:relative; overflow:visible; }
+.tl-today { position:absolute; top:0; bottom:0; width:2px; background:var(--c-espresso); z-index:2; }
+.tl-today::before {
+  content:'Hoy'; position:absolute; top:-16px; left:50%;
+  transform:translateX(-50%); font-size:9px; font-weight:700;
+  color:var(--c-espresso); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap;
+}
+.tl-bar {
+  position:absolute; top:3px; height:20px; border-radius:3px;
+  display:flex; align-items:center; padding:0 6px;
+  font-size:10px; font-weight:600; color:white; white-space:nowrap;
+  overflow:hidden; cursor:pointer; transition:opacity .12s;
+}
+.tl-bar:hover { opacity:.82; }
+.tl-bar.ok      { background:var(--c-green); }
+.tl-bar.warn    { background:var(--c-amber); }
+.tl-bar.overdue { background:var(--c-red); }
+.tl-legend {
+  padding:10px 20px 14px;
+  border-top:1px solid var(--c-border);
+  display:flex; gap:18px; align-items:center; flex-wrap:wrap;
+}
+.tl-legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--c-muted); }
+.tl-legend-dot  { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+/* ── Alert banners ── */
+.banner {
+  border-radius:var(--radius-sm);
+  padding:12px 16px;
+  display:flex; align-items:flex-start; gap:10px;
+  margin-bottom:14px; font-size:12px; font-weight:500;
+}
+.banner.warn  { background:var(--c-amber-bg); border:1px solid #E8C570; color:var(--c-amber); }
+.banner.red   { background:var(--c-red-bg);   border:1px solid #E8A0A0; color:var(--c-red);   }
+.banner.info  { background:var(--c-blue-bg);  border:1px solid #B8D0EE; color:var(--c-navy);  }
+.banner.terra { background:#F5E9DF; border:1px solid #D4A882; color:var(--c-terra-dk); }
+.banner-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+
+/* ── Client detail ── */
+.detail-header {
+  background:var(--c-cream);
+  border:1px solid var(--c-border);
+  border-radius:var(--radius);
+  padding:22px 24px; margin-bottom:18px;
+  box-shadow:var(--shadow);
+  display:flex; align-items:flex-start;
+  justify-content:space-between; gap:20px;
+}
+.detail-name {
+  font-family:'Nunito',sans-serif; font-weight:900;
+  font-size:24px; letter-spacing:-.4px; margin-bottom:10px;
+}
+.detail-stats { display:flex; gap:28px; flex-wrap:wrap; }
+.detail-stat-label { font-size:10px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--c-muted); margin-bottom:2px; }
+.detail-stat-val   { font-family:'DM Mono',monospace; font-size:14px; font-weight:500; }
+.credit-block { min-width:240px; }
+.credit-bar-lbl { display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; color:var(--c-txt2); }
+.credit-bar-track { height:10px; background:var(--c-warm2); border-radius:5px; overflow:hidden; margin-bottom:7px; border:1px solid var(--c-border); }
+.credit-bar-fill  { height:100%; border-radius:5px; }
+.credit-totals { display:flex; justify-content:space-between; font-size:11px; color:var(--c-muted); font-family:'DM Mono',monospace; }
+.detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.detail-full { grid-column:1/-1; }
+.empty-state { padding:22px; text-align:center; font-size:13px; color:var(--c-muted); }
+.back-row { margin-bottom:18px; }
+
+/* ── Bot page ── */
+.bot-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.bot-full { grid-column:1/-1; }
+.bot-textarea {
+  width:100%; resize:vertical; min-height:90px;
+  font-family:'Nunito',sans-serif; font-size:13px;
+  padding:10px 12px; border-radius:var(--radius-sm);
+  border:1px solid var(--c-border); background:var(--c-warm2);
+  color:var(--c-txt); outline:none; line-height:1.5;
+  transition:border-color .15s;
+}
+.bot-textarea:focus { border-color:var(--c-terra); }
+.bot-preview {
+  background:var(--c-espresso); border-radius:var(--radius);
+  padding:16px 20px; color:rgba(255,255,255,.8);
+  font-size:12.5px; line-height:1.7;
+}
+.bot-preview-msg {
+  background:rgba(255,255,255,.1);
+  border-radius:8px 8px 8px 2px;
+  padding:10px 14px; font-size:12px; color:white;
+  margin-bottom:8px; max-width:85%; display:inline-block;
+}
+.bot-preview-resp {
+  background:var(--c-terra);
+  border-radius:8px 8px 2px 8px;
+  padding:10px 14px; font-size:12px; color:white;
+  margin-bottom:8px; max-width:85%;
+  display:block; margin-left:auto;
+}
+.bot-tag {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:600; cursor:pointer;
+  border:none; transition:all .15s;
+}
+.bot-tag.on  { background:var(--c-terra); color:white; }
+.bot-tag.off { background:var(--c-warm2); color:var(--c-muted); border:1px solid var(--c-border); }
+.bot-tags { display:flex; gap:7px; flex-wrap:wrap; margin-top:8px; }
+
+/* ── ECHEQ filter ── */
+.filter-row { display:flex; gap:7px; margin-bottom:12px; }
+.filter-btn {
+  padding:5px 13px; border-radius:20px; font-size:12px; font-weight:500;
+  cursor:pointer; border:1px solid var(--c-border);
+  background:var(--c-cream); color:var(--c-txt2);
+  transition:all .12s; font-family:'Nunito',sans-serif;
+}
+.filter-btn.active {
+  background:var(--c-espresso); color:white;
+  border-color:var(--c-espresso); font-weight:600;
+}
+.echeq-pending { background:#FFFDF6 !important; }
+.src-dot { width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:4px; }
+.src-mail { background:var(--c-navy); }
+.src-wsp  { background:var(--c-green); }
+
+/* ── Toast ── */
+.toast {
+  position:fixed; bottom:22px; right:22px;
+  background:var(--c-espresso); color:white;
+  padding:11px 16px; border-radius:var(--radius-sm);
+  font-size:13px; font-weight:500;
+  box-shadow:var(--shadow-md);
+  z-index:999; display:none;
+  align-items:center; gap:8px;
+  animation:slideUp .25s ease;
+}
+.toast.show { display:flex; }
+@keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── Mot reminder button ── */
+.btn-remind {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 10px; border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif;
+  font-size:11px; font-weight:600;
+  background:var(--c-espresso); color:white;
+  border:none; cursor:pointer; transition:all .12s; white-space:nowrap;
+}
+.btn-remind:hover { background:var(--c-terra); }
+.btn-remind.sent  { background:var(--c-green-bg); color:var(--c-green); cursor:default; }
+.btn-remind-ghost {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:4px 10px; border-radius:var(--radius-sm);
+  font-family:'Nunito',sans-serif;
+  font-size:11px; font-weight:600;
+  background:transparent; color:var(--c-txt2);
+  border:1px solid var(--c-border); cursor:pointer; transition:all .12s;
+}
+.btn-remind-ghost:hover { background:var(--c-warm2); }
+
+/* dias badge */
+.dias {
+  font-family:'DM Mono',monospace; font-size:12px; font-weight:700;
+  padding:2px 8px; border-radius:4px; white-space:nowrap;
+}
+.dias.ok   { background:var(--c-green-bg); color:var(--c-green); }
+.dias.warn { background:var(--c-amber-bg); color:var(--c-amber); }
+.dias.crit { background:var(--c-red-bg);   color:var(--c-red);   }
+
+
+  /* ── CHAT MESSAGES ──────────────────────────────────────────── */
+  .msg-sender { font-size:10px; font-weight:700; margin-bottom:3px; text-transform:uppercase; letter-spacing:.5px; }
+  .msg-sender.bot { color:var(--c-terra); text-align:right; }
+  .msg-sender.op  { color:#888; text-align:right; }
+  .msg-sender.client { color:var(--c-muted); }
+  .msg-bubble { max-width:68%; padding:10px 14px; border-radius:12px; font-size:13px; line-height:1.5; white-space:pre-wrap; }
+  .msg-bubble.client { background:white; color:var(--c-txt); border-radius:2px 12px 12px 12px; box-shadow:var(--shadow); }
+  .msg-bubble.bot    { background:var(--c-terra); color:white; border-radius:12px 2px 12px 12px; }
+  .msg-bubble.op     { background:#2A1E14; color:white; border-radius:12px 2px 12px 12px; }
+  .msg-bubble.error  { background:var(--c-red-bg); color:var(--c-red); border:1px solid #E8A0A0; border-radius:12px 2px 12px 12px; }
+  .msg-time { font-size:10px; color:var(--c-muted); flex-shrink:0; margin-bottom:4px; font-family:'DM Mono',monospace; }
+  .msg-row { display:flex; align-items:flex-end; gap:8px; }
+  .msg-row.client { flex-direction:row; }
+  .msg-row.bot,.msg-row.op,.msg-row.error { flex-direction:row-reverse; }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ TOPBAR ═══════════════════ -->
+<header class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">U</div>
+    <div>
+      <span class="topbar-name">Uma Malta</span>
+      <span class="topbar-sub">· Crédito</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-meta">Datos de ejemplo · Prototipo v1</span>
+    <span class="proto-badge">Prototipo</span>
+  </div>
+</header>
+
+<!-- ═══════════════════ SHELL ═══════════════════ -->
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-section">Principal</div>
+    <div class="sb-item active" data-page="dashboard" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="sb-item" data-page="clientes" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Clientes
+    </div>
+    <div class="sb-item" data-page="echeqs" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      ECHEQs
+      <span class="sb-badge amber">3</span>
+    </div>
+    <div class="sb-hr"></div>
+    <div class="sb-section">Cobranzas</div>
+    <div class="sb-item" data-page="deuda" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Gestión de deuda
+      <span class="sb-badge red">3</span>
+    </div>
+    <div class="sb-hr"></div>
+    <div class="sb-section">WhatsApp</div>
+    <div class="sb-item" data-page="chats" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Historial de chats
+    </div>
+    <div class="sb-hr"></div>
+    <div class="sb-section">Configuración</div>
+    <div class="sb-item" data-page="bot" onclick="nav(this)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V3"/><circle cx="12" cy="3" r="1"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg>
+      Instrucciones del bot
+    </div>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-avatar">AC</div>
+        <div>
+          <div class="sb-uname">Alejandro Corvella</div>
+          <div class="sb-urole">Product Owner · Uma Malta</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ══════════════ DASHBOARD ══════════════ -->
+    <div id="page-dashboard" class="page active">
+      <div class="inner">
+
+        <!-- TOP ROW: header + bot status -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:16px;">
+          <div>
+            <div class="ph-label" style="margin-bottom:4px">Inicio</div>
+            <h1 class="ph-title">Panel de operaciones</h1>
+            <p class="ph-desc">15 de abril de 2026 · actualizado hace 3 min</p>
+          </div>
+          <!-- Bot status widget -->
+          <div id="bot-status-widget" style="background:var(--c-cream);border:1px solid var(--c-border);border-radius:var(--radius);padding:12px 16px;box-shadow:var(--shadow);min-width:220px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--c-muted)">Estado del bot</div>
+              <div id="bot-mode-badge" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--c-green-bg);color:var(--c-green);">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--c-green);display:inline-block"></span>
+                Automático
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--c-txt2);margin-bottom:10px;line-height:1.4" id="bot-mode-desc">El bot responde y gestiona conversaciones de forma autónoma.</div>
+            <div style="display:flex;gap:5px;margin-top:2px;">
+              <button id="btn-bot-auto" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--c-green);background:var(--c-green-bg);color:var(--c-green);transition:all .15s;" onclick="setBotMode('auto')">● Auto</button>
+              <button id="btn-bot-manual" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-txt2);transition:all .15s;" onclick="setBotMode('manual')">◐ Manual</button>
+              <button id="btn-bot-off" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-muted);opacity:0.45;transition:all .15s;" onclick="setBotMode('off')" disabled>○ Apagar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOSAIC LAYOUT -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 280px;grid-template-rows:auto auto;gap:14px;">
+
+          <!-- KPI 1: Crédito expuesto -->
+          <div class="card" style="grid-column:1;grid-row:1;">
+            <div class="card-stripe terra"></div>
+            <div class="card-label">Crédito expuesto</div>
+            <div class="card-val sm">$1.810.000</div>
+            <div class="card-sub">sobre $4.050.000 de límite</div>
+            <div class="card-delta neutral" style="margin-top:6px">↔ 45% de utilización</div>
+          </div>
+
+          <!-- KPI 2: Deuda vencida -->
+          <div class="card" style="grid-column:2;grid-row:1;cursor:pointer;" onclick="nav(document.querySelector('[data-page=deuda]'))">
+            <div class="card-stripe red"></div>
+            <div class="card-label">Deuda vencida</div>
+            <div class="card-val red">$640.000</div>
+            <div class="card-sub">3 clientes en mora activa</div>
+            <div class="card-delta bad">↑ $120k vs. mes anterior</div>
+            <div style="font-size:11px;color:var(--c-terra);margin-top:8px;font-weight:600;">Ver gestión de deuda →</div>
+          </div>
+
+          <!-- KPI 3: Saldo regularizado -->
+          <div class="card" style="grid-column:3;grid-row:1;">
+            <div class="card-stripe green"></div>
+            <div class="card-label">Saldo regularizado</div>
+            <div class="card-val green sm">$218.000</div>
+            <div class="card-sub">3 clientes regularizaron este mes</div>
+            <div class="card-delta good">↓ 25% tiempo prom. de cobro</div>
+          </div>
+
+          <!-- ALERTAS: ocupa columna 4, filas 1 y 2 -->
+          <div style="grid-column:4;grid-row:1/3;background:var(--c-cream);border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
+            <div style="padding:14px 16px 10px;border-bottom:1px solid var(--c-border);background:var(--c-warm2);border-left:3px solid var(--c-red);">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--c-txt2);">Alertas activas</div>
+              <div style="font-size:11px;color:var(--c-muted);margin-top:2px">3 requieren atención hoy</div>
+            </div>
+            <div style="padding:12px;">
+              <!-- Alert 1 -->
+              <div onclick="navDetail('bar-esquina')" style="cursor:pointer;background:var(--c-red-bg);border:1px solid #E8A0A0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                <div style="display:flex;align-items:flex-start;gap:7px;">
+                  <span style="font-size:14px;flex-shrink:0">🚨</span>
+                  <div>
+                    <div style="font-size:12px;font-weight:700;color:var(--c-red)">Bar La Esquina</div>
+                    <div style="font-size:11px;color:var(--c-red);opacity:.85;margin-top:2px;line-height:1.4">Límite agotado · 2 ECHEQs vencidos · pedidos bloqueados</div>
+                    <div style="font-size:10px;color:var(--c-red);margin-top:5px;font-weight:600">Ver ficha →</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Alert 2 -->
+              <div onclick="navDetail('dist-norte')" style="cursor:pointer;background:var(--c-amber-bg);border:1px solid #E8C570;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                <div style="display:flex;align-items:flex-start;gap:7px;">
+                  <span style="font-size:14px;flex-shrink:0">⚠️</span>
+                  <div>
+                    <div style="font-size:12px;font-weight:700;color:var(--c-amber)">Distribuidora Norte</div>
+                    <div style="font-size:11px;color:var(--c-amber);opacity:.85;margin-top:2px;line-height:1.4">ECHEQ vencido · crédito al 81% · paga 8 días tarde</div>
+                    <div style="font-size:10px;color:var(--c-amber);margin-top:5px;font-weight:600">Ver ficha →</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Alert 3 -->
+              <div onclick="navDetail('san-martin')" style="cursor:pointer;background:var(--c-amber-bg);border:1px solid #E8C570;border-radius:var(--radius-sm);padding:10px 12px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                <div style="display:flex;align-items:flex-start;gap:7px;">
+                  <span style="font-size:14px;flex-shrink:0">⚠️</span>
+                  <div>
+                    <div style="font-size:12px;font-weight:700;color:var(--c-amber)">Maltería San Martín</div>
+                    <div style="font-size:11px;color:var(--c-amber);opacity:.85;margin-top:2px;line-height:1.4">Pedido #10863 · ECHEQ cuota 3/3 excede 60 días</div>
+                    <div style="font-size:10px;color:var(--c-amber);margin-top:5px;font-weight:600">Ver ficha →</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 4: Tasa de morosidad + Vence 30 días — ocupa col 1-2, fila 2 -->
+          <div style="grid-column:1/4;grid-row:2;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+            <div class="card">
+              <div class="card-stripe amber"></div>
+              <div class="card-label">Tasa de morosidad</div>
+              <div class="card-val amber">35%</div>
+              <div class="card-sub">del crédito total expuesto</div>
+              <div class="card-delta bad">↑ 8 pts vs. mes anterior · objetivo &lt;20%</div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="nav(document.querySelector('[data-page=deuda]'))">
+              <div class="card-stripe navy"></div>
+              <div class="card-label">Vence próx. 30 días</div>
+              <div class="card-val sm">$455.000</div>
+              <div class="card-sub">4 ECHEQs en cartera</div>
+              <div style="font-size:11px;color:var(--c-terra);margin-top:8px;font-weight:600;">Ver timeline →</div>
+            </div>
+            <div class="card" style="cursor:pointer;" onclick="nav(document.querySelector('[data-page=echeqs]'))">
+              <div class="card-stripe amber"></div>
+              <div class="card-label">ECHEQs sin procesar</div>
+              <div class="card-val amber">3</div>
+              <div class="card-sub">pendientes de registro en SAP</div>
+              <div style="font-size:11px;color:var(--c-terra);margin-top:8px;font-weight:600;">Ver ECHEQs →</div>
+            </div>
+          </div>
+
+        </div><!-- /mosaic -->
+
+        <!-- ═══ ANALYTICS SECTION — 3 charts stacked ═══ -->
+
+        <!-- CHART 1: Aging Buckets by Client (full width) -->
+        <div style="margin-top:14px;background:var(--c-cream);border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
+          <div style="padding:14px 18px 10px;border-bottom:1px solid var(--c-border);background:var(--c-warm2);border-left:3px solid var(--c-red);">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--c-txt2)">Aging de deuda por cliente</div>
+            <div style="font-size:11px;color:var(--c-muted);margin-top:2px">Distribución del crédito utilizado según antigüedad de la deuda · cada barra = % del límite de crédito del cliente</div>
+          </div>
+          <div style="padding:18px 24px 14px;" id="aging-chart"></div>
+          <div style="padding:8px 24px 14px;border-top:1px solid var(--c-border);display:flex;gap:18px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-green)"></div>Al día</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-amber)"></div>Vencido 1–30 días</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-terra)"></div>Vencido 31–60 días</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-red)"></div>Vencido > 60 días</div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;border:1.5px dashed var(--c-muted);background:transparent"></div>Crédito disponible</div>
+          </div>
+        </div>
+
+        <!-- CHART 2: DSO Trend (full width, enriched with per-client lines) -->
+        <div style="margin-top:14px;background:var(--c-cream);border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
+          <div style="padding:14px 18px 10px;border-bottom:1px solid var(--c-border);background:var(--c-warm2);border-left:3px solid var(--c-navy);">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--c-txt2)">Días promedio de cobro (DSO) — Tendencia de la cartera</div>
+            <div style="font-size:11px;color:var(--c-muted);margin-top:2px">Promedio general de toda la cartera + clientes que más impactan · últimos 6 meses</div>
+          </div>
+          <div style="padding:18px 24px 14px;">
+            <canvas id="dso-chart" style="width:100%;height:220px;"></canvas>
+          </div>
+          <div style="padding:8px 24px 14px;border-top:1px solid var(--c-border);display:flex;gap:18px;flex-wrap:wrap;align-items:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--c-muted);margin-right:4px;">Referencias:</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-txt)"><div style="width:20px;height:4px;border-radius:2px;background:var(--c-terra)"></div><strong>Promedio cartera</strong></div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:20px;height:2px;border-radius:2px;background:var(--c-red);opacity:.5"></div>Bar La Esquina</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:20px;height:2px;border-radius:2px;background:var(--c-amber);opacity:.5"></div>Dist. Norte</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:20px;height:2px;border-radius:2px;background:var(--c-navy);opacity:.5"></div>Maltería San Martín</div>
+            <div style="margin-left:auto;display:flex;gap:14px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:16px;height:0;border-top:2px dashed var(--c-green);opacity:.6"></div>Objetivo (30d)</div>
+              <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:16px;height:0;border-top:2px dashed var(--c-muted);opacity:.35"></div>Prom. industria (42d)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHART 3: Cash Flow — Cobrado vs Esperado (full width, canvas) -->
+        <div style="margin-top:14px;background:var(--c-cream);border:1px solid var(--c-border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;">
+          <div style="padding:14px 18px 10px;border-bottom:1px solid var(--c-border);background:var(--c-warm2);border-left:3px solid var(--c-terra);">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--c-txt2)">Cobros mensuales — Real vs. Esperado</div>
+            <div style="font-size:11px;color:var(--c-muted);margin-top:2px">Monto cobrado efectivamente cada mes vs. monto que se esperaba cobrar · los meses futuros muestran la proyección según ECHEQs en cartera</div>
+          </div>
+          <div style="padding:20px 24px 14px;">
+            <canvas id="cashflow-chart" style="width:100%;height:200px;"></canvas>
+          </div>
+          <div style="padding:8px 24px 14px;border-top:1px solid var(--c-border);display:flex;gap:18px;flex-wrap:wrap;align-items:center;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--c-muted);margin-right:4px;">Referencias:</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-green)"></div>Cobrado</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;background:var(--c-red)"></div>Vencido (no cobrado)</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:10px;height:10px;border-radius:2px;border:2px dashed var(--c-terra);background:transparent"></div>Proyectado (según ECHEQs)</div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:var(--c-muted)"><div style="width:2px;height:14px;background:var(--c-espresso);border-radius:1px;"></div>Hoy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ CLIENTES ══════════════ -->
+    <!-- ══════════════ CLIENTES ══════════════ -->
+    <div id="page-clientes" class="page">
+      <div class="inner">
+        <div class="ph">
+          <div class="ph-label">Crédito</div>
+          <h1 class="ph-title">Estado crediticio de clientes</h1>
+          <p class="ph-desc">Visibilidad consolidada de límites, utilización y comportamiento de pago.</p>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-head">
+            <span class="tbl-title">Todos los clientes</span>
+            <span class="tbl-meta">7 clientes</span>
+          </div>
+          <table>
+            <thead><tr>
+            <th style="cursor:pointer;user-select:none;" onclick="sortClientes('nombre')"><span style="display:inline-flex;align-items:center;gap:4px;">Cliente <span id="sort-icon-nombre" style="font-size:10px;color:var(--c-muted)">↕</span></span></th>
+            <th>Límite</th>
+            <th style="min-width:160px;cursor:pointer;user-select:none;" onclick="sortClientes('utilizado')"><span style="display:inline-flex;align-items:center;gap:4px;">Crédito utilizado <span id="sort-icon-utilizado" style="font-size:10px;color:var(--c-muted)">↕</span></span></th>
+            <th style="cursor:pointer;user-select:none;" onclick="sortClientes('disponible')"><span style="display:inline-flex;align-items:center;gap:4px;">Disponible <span id="sort-icon-disponible" style="font-size:10px;color:var(--c-muted)">↕</span></span></th>
+            <th style="cursor:pointer;user-select:none;" onclick="sortClientes('dias')"><span style="display:inline-flex;align-items:center;gap:4px;">Días pago prom. <span id="sort-icon-dias" style="font-size:10px;color:var(--c-muted)">↕</span></span></th>
+            <th style="cursor:pointer;user-select:none;" onclick="sortClientes('estado')"><span style="display:inline-flex;align-items:center;gap:4px;">Estado <span id="sort-icon-estado" style="font-size:10px;color:var(--c-muted)">↕</span></span></th>
+            <th></th>
+          </tr></thead>
+            <tbody>
+              <tr data-nombre="cerveceria el molino" data-utilizado="24" data-disponible="380000" data-dias="22" data-estado="1">
+                <td class="fw">Cervecería El Molino</td><td class="mono">$500.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill ok" style="width:24%"></div></div><span class="prog-pct">24%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$120.000</span></td>
+                <td class="mono">$380.000</td>
+                <td><span class="mono">22</span> <span style="font-size:11px;color:var(--c-muted)">/30 días</span></td>
+                <td><span class="badge b-ok">Al día</span></td>
+                <td><button class="btn-link" onclick="navDetail('el-molino')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="distribuidora norte" data-utilizado="81" data-disponible="150000" data-dias="38" data-estado="2">
+                <td class="fw">Distribuidora Norte</td><td class="mono">$800.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill warn" style="width:81%"></div></div><span class="prog-pct">81%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$650.000</span></td>
+                <td class="mono">$150.000</td>
+                <td><span class="mono" style="color:var(--c-amber);font-weight:700">38</span> <span style="font-size:11px;color:var(--c-muted)">/30 días</span></td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><button class="btn-link" onclick="navDetail('dist-norte')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="bar la esquina" data-utilizado="100" data-disponible="0" data-dias="52" data-estado="3">
+                <td class="fw">Bar La Esquina</td><td class="mono">$300.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill full" style="width:100%"></div></div><span class="prog-pct" style="color:var(--c-red)">100%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$300.000</span></td>
+                <td class="mono" style="color:var(--c-red);font-weight:700">$0</td>
+                <td><span class="mono" style="color:var(--c-red);font-weight:700">52</span> <span style="font-size:11px;color:var(--c-muted)">/15 días</span></td>
+                <td><span class="badge b-red">Bloqueado</span></td>
+                <td><button class="btn-link" onclick="navDetail('bar-esquina')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="restaurante del puerto" data-utilizado="17" data-disponible="1000000" data-dias="40" data-estado="1">
+                <td class="fw">Restaurante Del Puerto</td><td class="mono">$1.200.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill ok" style="width:17%"></div></div><span class="prog-pct">17%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$200.000</span></td>
+                <td class="mono">$1.000.000</td>
+                <td><span class="mono">40</span> <span style="font-size:11px;color:var(--c-muted)">/45 días</span></td>
+                <td><span class="badge b-ok">Al día</span></td>
+                <td><button class="btn-link" onclick="navDetail('del-puerto')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="bares bares sa" data-utilizado="80" data-disponible="120000" data-dias="33" data-estado="2">
+                <td class="fw">Bares &amp; Bares SA</td><td class="mono">$600.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill warn" style="width:80%"></div></div><span class="prog-pct">80%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$480.000</span></td>
+                <td class="mono">$120.000</td>
+                <td><span class="mono" style="color:var(--c-amber);font-weight:700">33</span> <span style="font-size:11px;color:var(--c-muted)">/30 días</span></td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><button class="btn-link" onclick="navDetail('bares-bares')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="cerveza artesanal rojas" data-utilizado="24" data-disponible="190000" data-dias="28" data-estado="1">
+                <td class="fw">Cerveza Artesanal Rojas</td><td class="mono">$250.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill ok" style="width:24%"></div></div><span class="prog-pct">24%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$60.000</span></td>
+                <td class="mono">$190.000</td>
+                <td><span class="mono">28</span> <span style="font-size:11px;color:var(--c-muted)">/30 días</span></td>
+                <td><span class="badge b-ok">Al día</span></td>
+                <td><button class="btn-link" onclick="navDetail('rojas')">Ver →</button></td>
+              </tr>
+              <tr data-nombre="malteria san martin" data-utilizado="68" data-disponible="224000" data-dias="35" data-estado="2">
+                <td><span class="fw">Maltería San Martín</span><br><span style="font-size:11px;color:var(--c-amber);font-family:'DM Mono',monospace">⚠ ECHEQ multi-cuota pendiente</span></td>
+                <td class="mono">$700.000</td>
+                <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill warn" style="width:68%"></div></div><span class="prog-pct">68%</span></div><span class="mono" style="font-size:11px;color:var(--c-muted)">$476.000</span></td>
+                <td class="mono">$224.000</td>
+                <td><span class="mono" style="color:var(--c-amber);font-weight:700">35</span> <span style="font-size:11px;color:var(--c-muted)">/30 días</span></td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><button class="btn-link" onclick="navDetail('san-martin')">Ver →</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENT DETAIL (generic, shown over clientes) -->
+    <div id="page-detail" class="page">
+      <div class="inner">
+        <div class="back-row"><button class="btn btn-ghost" onclick="backToClientes()">← Volver a clientes</button></div>
+        <div class="detail-header" id="detail-header-content"></div>
+        <div class="detail-grid" id="detail-body"></div>
+      </div>
+    </div>
+
+    <!-- ══════════════ ECHEQs ══════════════ -->
+    <div id="page-echeqs" class="page">
+      <div class="inner">
+        <div class="ph">
+          <div class="ph-label">ECHEQs</div>
+          <h1 class="ph-title">Historial de ECHEQs</h1>
+          <p class="ph-desc">Registro completo de ECHEQs recibidos. Filtrá por estado y período para encontrar lo que necesitás.</p>
+        </div>
+        <div class="banner warn"><span class="banner-icon">⏳</span><div><strong>3 ECHEQs sin procesar</strong> pendientes de registro en SAP — Registrarlos actualiza el estado crediticio del cliente en tiempo real</div></div>
+        <div class="filter-row" style="flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <button class="filter-btn active" id="fb-estado-todos" onclick="filterEstado('todos',this)">Todos</button>
+          <button class="filter-btn" id="fb-pend" onclick="filterEstado('pend',this)">Sin procesar</button>
+          <button class="filter-btn" id="fb-proc" onclick="filterEstado('proc',this)">Procesados</button>
+        </div>
+        <div class="filter-row" style="flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px;">
+          <span style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--c-muted);">Período:</span>
+          <button class="filter-btn" id="fb-hoy"       onclick="filterFecha('hoy',this)">Hoy</button>
+          <button class="filter-btn" id="fb-semana"    onclick="filterFecha('semana',this)">Esta semana</button>
+          <button class="filter-btn active" id="fb-mes" onclick="filterFecha('mes',this)">Este mes</button>
+          <button class="filter-btn" id="fb-año"       onclick="filterFecha('año',this)">Este año</button>
+          <button class="filter-btn" id="fb-custom"    onclick="toggleCustomRange()">Rango personalizado</button>
+          <div id="custom-range" style="display:none;align-items:center;gap:6px;flex-wrap:wrap;">
+            <input type="date" id="fecha-desde" style="padding:4px 8px;border-radius:5px;border:1px solid var(--c-border);background:var(--c-warm2);font-size:12px;color:var(--c-txt);outline:none;" onchange="applyCustomRange()">
+            <span style="font-size:12px;color:var(--c-muted);">—</span>
+            <input type="date" id="fecha-hasta" style="padding:4px 8px;border-radius:5px;border:1px solid var(--c-border);background:var(--c-warm2);font-size:12px;color:var(--c-txt);outline:none;" onchange="applyCustomRange()">
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-head">
+            <span class="tbl-title">Registro de ECHEQs</span>
+            <span class="tbl-meta" id="echeq-count">12 ECHEQs</span>
+          </div>
+          <table>
+            <thead><tr><th>Fecha · Hora</th><th>Cliente</th><th>Canal</th><th>N° ECHEQ</th><th>Fecha de pago</th><th>Monto</th><th>Estado</th><th>Registrado SAP</th></tr></thead>
+            <tbody id="echeq-tbody">
+              <tr class="echeq-row echeq-pending" data-f="pend" data-fecha="2026-04-13"><td class="mono">08:14</td><td class="fw">Distribuidora Norte</td><td><span class="src-dot src-mail"></span><span style="font-size:11px">Mail</span></td><td class="mono">ECH-2026-004821</td><td class="mono">30/04/2026</td><td class="mono fw">$280.000</td><td><span class="badge b-warn">Sin procesar</span></td><td style="color:var(--c-muted);font-size:12px">—</td></tr>
+              <tr class="echeq-row echeq-pending" data-f="pend" data-fecha="2026-04-13"><td class="mono">09:42</td><td class="fw">Bares &amp; Bares SA</td><td><span class="src-dot src-wsp"></span><span style="font-size:11px">WhatsApp</span></td><td class="mono">ECH-2026-004837</td><td class="mono">20/06/2026 ⚠</td><td class="mono fw">$140.000</td><td><span class="badge b-red" style="background:#FFF0E0;color:#A0500A;">⚠ Fuera de norma</span></td><td style="color:var(--c-muted);font-size:12px">—</td></tr>
+              <tr class="echeq-row echeq-pending" data-f="pend" data-fecha="2026-04-13"><td class="mono">11:05</td><td class="fw">Bar La Esquina</td><td><span class="src-dot src-mail"></span><span style="font-size:11px">Mail</span></td><td class="mono">ECH-2026-004851</td><td class="mono">05/05/2026</td><td class="mono fw">$120.000</td><td><span class="badge b-warn">Sin procesar</span></td><td style="color:var(--c-muted);font-size:12px">—</td></tr>
+              <tr class="echeq-row" data-f="proc" data-fecha="2026-04-13"><td class="mono">07:30</td><td class="fw">Cervecería El Molino</td><td><span class="src-dot src-mail"></span><span style="font-size:11px">Mail</span></td><td class="mono">ECH-2026-004798</td><td class="mono">05/05/2026</td><td class="mono">$120.000</td><td><span class="badge b-ok">Procesado</span></td><td class="mono" style="font-size:11px;color:var(--c-green)">09:15 · L. Fernández</td></tr>
+              <tr class="echeq-row" data-f="proc" data-fecha="2026-04-13"><td class="mono">07:55</td><td class="fw">Restaurante Del Puerto</td><td><span class="src-dot src-wsp"></span><span style="font-size:11px">WhatsApp</span></td><td class="mono">ECH-2026-004803</td><td class="mono">01/05/2026</td><td class="mono">$200.000</td><td><span class="badge b-ok">Procesado</span></td><td class="mono" style="font-size:11px;color:var(--c-green)">09:30 · L. Fernández</td></tr>
+              <tr class="echeq-row" data-f="proc" data-fecha="2026-04-13"><td class="mono">08:02</td><td class="fw">Cerveza Artesanal Rojas</td><td><span class="src-dot src-mail"></span><span style="font-size:11px">Mail</span></td><td class="mono">ECH-2026-004807</td><td class="mono">08/05/2026</td><td class="mono">$60.000</td><td><span class="badge b-ok">Procesado</span></td><td class="mono" style="font-size:11px;color:var(--c-green)">09:45 · L. Fernández</td></tr>
+              <tr class="echeq-row" data-f="proc" data-fecha="2026-04-13"><td class="mono">08:30</td><td class="fw">Cervecería El Molino</td><td><span class="src-dot src-mail"></span><span style="font-size:11px">Mail</span></td><td class="mono">ECH-2026-004812</td><td class="mono">20/05/2026</td><td class="mono">$75.000</td><td><span class="badge b-ok">Procesado</span></td><td class="mono" style="font-size:11px;color:var(--c-green)">10:00 · M. González</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="banner info" style="margin-top:16px;margin-bottom:0">
+          <span class="banner-icon">💡</span>
+          <div><strong>Hoy vs. con la solución:</strong> Hoy, alguien carga manualmente cada ECHEQ en SAP (puede tardar horas). Con IA, el sistema detecta el adjunto, extrae los datos y los registra en SAP automáticamente — el estado crediticio se actualiza en tiempo real.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ SEGUIMIENTO DEUDA ══════════════ -->
+    <div id="page-deuda" class="page">
+      <div class="inner">
+        <div class="ph">
+          <div class="ph-label">Gestión de deuda</div>
+          <h1 class="ph-title">Gestión de deuda</h1>
+          <p class="ph-desc">Deuda vencida, alertas activas, proyección de vencimientos y configuración de recordatorios.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="cards cards-4" style="margin-bottom:20px;">
+          <div class="card">
+            <div class="card-stripe red"></div>
+            <div class="card-label">Deuda vencida</div>
+            <div class="card-val red">$640.000</div>
+            <div class="card-sub">3 clientes en mora</div>
+            <div class="card-delta bad">↑ $120k vs. mes anterior</div>
+          </div>
+          <div class="card">
+            <div class="card-stripe amber"></div>
+            <div class="card-label">Tasa de morosidad</div>
+            <div class="card-val amber">35%</div>
+            <div class="card-sub">del crédito expuesto</div>
+            <div class="card-delta bad">↑ 8 pts — objetivo: &lt;20%</div>
+          </div>
+          <div class="card">
+            <div class="card-stripe green"></div>
+            <div class="card-label">Saldo regularizado</div>
+            <div class="card-val green sm">$218.000</div>
+            <div class="card-sub">acumulado este mes</div>
+            <div class="card-delta good">3 clientes regularizaron</div>
+          </div>
+          <div class="card">
+            <div class="card-stripe navy"></div>
+            <div class="card-label">Días prom. de cobro</div>
+            <div class="card-val sm">38</div>
+            <div class="card-sub">promedio actual</div>
+            <div class="card-delta good">↓ 12 días vs. sin herramienta</div>
+          </div>
+        </div>
+
+        <!-- Tabla de deudores -->
+        <div class="tbl-wrap">
+          <div class="tbl-head">
+            <span class="tbl-title">Clientes con deuda vencida o en riesgo</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="tbl-meta">5 clientes</span>
+              <button class="btn btn-primary" onclick="sendAll(this)" style="padding:5px 12px;font-size:11px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Enviar a todos
+              </button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Cliente</th><th>Tipo</th><th>Monto</th><th>Mora</th><th>Último contacto</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr style="background:var(--c-red-bg)">
+                <td><div class="fw">Bar La Esquina</div><div style="font-size:11px;color:var(--c-muted)">2 ECHEQs vencidos · límite agotado</div></td>
+                <td style="font-size:12px;color:var(--c-red)">🔴 ECHEQ rebotado</td>
+                <td class="mono fw" style="color:var(--c-red)">$220.000</td>
+                <td><span class="dias crit">52 días</span></td>
+                <td class="mono" style="font-size:11px;color:var(--c-muted)">—</td>
+                <td><span class="badge b-red">Bloqueado</span></td>
+                <td><div style="display:flex;gap:6px">
+                  <button class="btn-remind" onclick="remind(this,'Bar La Esquina')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>
+                  <button class="btn-remind-ghost" onclick="navDetail('bar-esquina')">Ficha</button>
+                </div></td>
+              </tr>
+              <tr style="background:var(--c-amber-bg)">
+                <td><div class="fw">Distribuidora Norte</div><div style="font-size:11px;color:var(--c-muted)">ECHEQ vencido · paga 8 días tarde</div></td>
+                <td style="font-size:12px;color:var(--c-amber)">🟡 ECHEQ vencido</td>
+                <td class="mono fw" style="color:var(--c-amber)">$120.000</td>
+                <td><span class="dias warn">38 días</span></td>
+                <td class="mono" style="font-size:11px;color:var(--c-muted)">Hace 7 días</td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><div style="display:flex;gap:6px">
+                  <button class="btn-remind" onclick="remind(this,'Distribuidora Norte')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>
+                  <button class="btn-remind-ghost" onclick="navDetail('dist-norte')">Ficha</button>
+                </div></td>
+              </tr>
+              <tr style="background:var(--c-amber-bg)">
+                <td><div class="fw">Maltería San Martín</div><div style="font-size:11px;color:var(--c-muted)">Cuota 3/3 pedido #10863 · excede 60 días</div></td>
+                <td style="font-size:12px;color:var(--c-amber)">🟡 ECHEQ fuera de norma</td>
+                <td class="mono fw" style="color:var(--c-amber)">$85.000</td>
+                <td><span class="dias warn">35 días</span></td>
+                <td class="mono" style="font-size:11px;color:var(--c-muted)">Ayer</td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><div style="display:flex;gap:6px">
+                  <button class="btn-remind" onclick="remind(this,'Maltería San Martín')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>
+                  <button class="btn-remind-ghost" onclick="navDetail('san-martin')">Ficha</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="fw">Bares &amp; Bares SA</div><div style="font-size:11px;color:var(--c-muted)">ECHEQ >60 días · pedido #10858 excede disponible</div></td>
+                <td style="font-size:12px;color:var(--c-amber)">🟡 Plazo fuera de norma</td>
+                <td class="mono fw" style="color:var(--c-txt2)">$140.000</td>
+                <td><span class="dias warn">33 días</span></td>
+                <td class="mono" style="font-size:11px;color:var(--c-muted)">Hace 3 días</td>
+                <td><span class="badge b-warn">En alerta</span></td>
+                <td><div style="display:flex;gap:6px">
+                  <button class="btn-remind" onclick="remind(this,'Bares &amp; Bares SA')"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Enviar</button>
+                  <button class="btn-remind-ghost" onclick="navDetail('bares-bares')">Ficha</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td><div class="fw">Distribuidora Norte</div><div style="font-size:11px;color:var(--c-muted)">Pedido #10854 — transferencia acordada no completada</div></td>
+                <td style="font-size:12px;color:var(--c-muted)">⬜ Transferencia pendiente</td>
+                <td class="mono fw" style="color:var(--c-txt2)">$95.000</td>
+                <td><span class="dias warn">12 días</span></td>
+                <td class="mono" style="font-size:11px;color:var(--c-muted)">Hoy 08:14</td>
+                <td><span class="badge b-info">Pendiente</span></td>
+                <td><div style="display:flex;gap:6px">
+                  <button class="btn-remind sent" disabled>✓ Enviado hoy</button>
+                  <button class="btn-remind-ghost" onclick="navDetail('dist-norte')">Ficha</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Timeline -->
+        <div class="sec-card">
+          <div class="sec-card-head">
+            <span class="sec-card-title">Timeline de vencimientos — próximos 90 días</span>
+            <span class="sec-card-meta">Abr — Jun 2026 · Hoy: 15/04</span>
+          </div>
+          <div class="tl-grid">
+            <div class="tl-months">
+              <div class="tl-month">Abril 2026</div>
+              <div class="tl-month">Mayo 2026</div>
+              <div class="tl-month">Junio 2026</div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-client">Bar La Esquina</div>
+              <div class="tl-track">
+                <div class="tl-today" style="left:14%"></div>
+                <div class="tl-bar overdue" style="left:0;width:12%" title="ECH-003921 · $120k vencido">$120k venc.</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-client">Distribuidora Norte</div>
+              <div class="tl-track">
+                <div class="tl-today" style="left:14%"></div>
+                <div class="tl-bar overdue" style="left:0;width:10%" title="ECH-004511 · vencido">$120k venc.</div>
+                <div class="tl-bar warn"   style="left:47%;width:18%" title="ECH-004690 · $180k · 30/abr">$180k · 30/abr</div>
+                <div class="tl-bar ok"     style="left:68%;width:19%" title="ECH-004821 · $280k">$280k</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-client">Bares &amp; Bares SA</div>
+              <div class="tl-track">
+                <div class="tl-today" style="left:14%"></div>
+                <div class="tl-bar warn"   style="left:14%;width:14%" title="ECH-004501 · $140k · 18/abr">$140k · 18/abr</div>
+                <div class="tl-bar ok"     style="left:47%;width:15%" title="ECH-004688 · $220k · 1/may">$220k · 1/may</div>
+                <div class="tl-bar overdue" style="left:72%;width:22%" title="⚠ ECH-004837 · $140k · 20/jun — fuera de norma">⚠ $140k · 20/jun</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-client">Maltería San Martín</div>
+              <div class="tl-track">
+                <div class="tl-today" style="left:14%"></div>
+                <div class="tl-bar ok"     style="left:16%;width:16%" title="ECH-004860 · $120k · 30/abr">$120k · 30/abr</div>
+                <div class="tl-bar warn"   style="left:46%;width:15%" title="ECH-004861 · $95k · 15/may">$95k · 15/may</div>
+                <div class="tl-bar overdue" style="left:72%;width:22%" title="⚠ ECH-004862 · $85k · 20/jun">⚠ $85k · 20/jun</div>
+              </div>
+            </div>
+            <div class="tl-row">
+              <div class="tl-client">Cervecería El Molino</div>
+              <div class="tl-track">
+                <div class="tl-today" style="left:14%"></div>
+                <div class="tl-bar ok" style="left:22%;width:19%" title="ECH-004798 · $120k · 5/may">$120k · 5/may</div>
+                <div class="tl-bar ok" style="left:46%;width:22%" title="ECH-004812 · $75k · 20/may">$75k · 20/may</div>
+              </div>
+            </div>
+          </div>
+          <div class="tl-legend">
+            <span style="font-size:11px;color:var(--c-muted)">Referencias:</span>
+            <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--c-red)"></div>Vencido o fuera de norma</div>
+            <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--c-amber)"></div>Vence en 30 días</div>
+            <div class="tl-legend-item"><div class="tl-legend-dot" style="background:var(--c-green)"></div>Vigente</div>
+          </div>
+        </div>
+
+        <!-- Config de cobranzas -->
+        <div style="margin-top:28px;">
+          <div class="ph-label" style="margin-bottom:6px">Configuración de cobranzas</div>
+          <div style="font-family:'Nunito',sans-serif; font-weight:900;font-size:20px;letter-spacing:-.3px;color:var(--c-txt);margin-bottom:18px;">Reglas y automatizaciones</div>
+          <div class="cards cards-2">
+            <div class="sec-card" style="margin-top:0">
+              <div class="sec-card-head"><span class="sec-card-title">Plazo máximo de vencimiento</span></div>
+              <div class="sec-body">
+                <div class="banner terra" style="margin-bottom:14px;margin-top:0">Los ECHEQs que superen este umbral son <strong>siempre flaggeados</strong> y el cliente notificado. El rechazo automático del pedido es opcional.</div>
+                <div class="setting-row"><div><div class="setting-label">Umbral máximo</div><div class="setting-desc">ECHEQs con vencimiento mayor quedan fuera de norma</div></div><select class="setting-select"><option>30 días</option><option>45 días</option><option selected>60 días</option><option>90 días</option></select></div>
+                <div class="setting-row"><div><div class="setting-label">Rechazo automático</div><div class="setting-desc">Si está activo el pedido se rechaza; si no, queda en revisión</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div><div class="setting-label">Notificación al cliente</div><div class="setting-desc">Siempre activo — el cliente recibe aviso con N° de ECHEQ</div></div><label class="toggle"><input type="checkbox" checked disabled style="cursor:not-allowed"><span class="toggle-slider" style="opacity:.6;cursor:not-allowed"></span></label></div>
+              </div>
+            </div>
+            <div class="sec-card" style="margin-top:0">
+              <div class="sec-card-head"><span class="sec-card-title">Frecuencia de recordatorios</span></div>
+              <div class="sec-body">
+                <div class="setting-row"><div><div class="setting-label">Primer recordatorio</div><div class="setting-desc">A cuántos días del vencimiento</div></div><select class="setting-select"><option>Al día siguiente</option><option selected>A los 3 días</option><option>A los 7 días</option></select></div>
+                <div class="setting-row"><div><div class="setting-label">Repetición</div><div class="setting-desc">Frecuencia de recordatorios siguientes</div></div><select class="setting-select"><option>Cada 3 días</option><option selected>Cada 7 días</option><option>Cada 15 días</option><option>Sin repetición</option></select></div>
+                <div class="setting-row"><div><div class="setting-label">Escalado interno</div><div class="setting-desc">Notificar al equipo si supera 30 días sin resolver</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              </div>
+            </div>
+            <div class="sec-card" style="margin-top:0">
+              <div class="sec-card-head"><span class="sec-card-title">Canales</span></div>
+              <div class="sec-body">
+                <div class="setting-row"><div><div class="setting-label">Mail</div><div class="setting-desc">Correo al contacto registrado del cliente</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                <div class="setting-row"><div><div class="setting-label">WhatsApp</div><div class="setting-desc">WhatsApp Business al número del cliente</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              </div>
+            </div>
+            <div class="sec-card" style="margin-top:0">
+              <div class="sec-card-head"><span class="sec-card-title">Tipo de mensaje</span></div>
+              <div class="sec-body">
+                <div class="setting-row"><div><div class="setting-label">Tono</div></div><select class="setting-select"><option selected>Amigable</option><option>Formal</option><option>Urgente</option></select></div>
+                <div class="setting-row"><div><div class="setting-label">Incluir detalle de deuda</div><div class="setting-desc">Monto e instrucciones de pago en el mensaje</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+            <button class="btn btn-primary" onclick="toast('Configuración guardada correctamente')">Guardar configuración</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════ CHATS LIST ══════════════ -->
+    <div id="page-chats" class="page">
+      <div class="inner">
+        <div class="ph">
+          <div class="ph-label">WhatsApp</div>
+          <h1 class="ph-title">Historial de chats</h1>
+          <p class="ph-desc">Todas las conversaciones del número +54 11 4567-8900 · ordenables y filtrables.</p>
+        </div>
+
+        <!-- Filters + search -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+          <div class="filter-row" style="margin-bottom:0;">
+            <button class="filter-btn active" onclick="filterChatList('todos',this)">Todas</button>
+            <button class="filter-btn" onclick="filterChatList('auto',this)">Bot activo</button>
+            <button class="filter-btn" onclick="filterChatList('manual',this)">Modo manual</button>
+            <button class="filter-btn" onclick="filterChatList('error',this)">Con errores</button>
+          </div>
+          <input id="chat-search-input" style="padding:7px 14px;border-radius:20px;border:1px solid var(--c-border);background:var(--c-warm2);font-size:12px;color:var(--c-txt);outline:none;width:240px;font-family:'Nunito',sans-serif;" placeholder="🔍  Buscar cliente o número..." oninput="filterChatList(null,null,this.value)">
+        </div>
+
+        <div class="tbl-wrap">
+          <div class="tbl-head">
+            <span class="tbl-title">Conversaciones</span>
+            <span class="tbl-meta" id="chat-list-count">5 conversaciones</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="cursor:pointer" onclick="sortChatList('cliente')">Cliente <span id="cs-cliente" style="font-size:10px;color:var(--c-muted)">↕</span></th>
+                <th>Empresa</th>
+                <th>Teléfono</th>
+                <th style="cursor:pointer" onclick="sortChatList('mensajes')">Mensajes <span id="cs-mensajes" style="font-size:10px;color:var(--c-muted)">↕</span></th>
+                <th style="cursor:pointer" onclick="sortChatList('ultimo')">Última actividad <span id="cs-ultimo" style="font-size:10px;color:var(--c-muted)">↕</span></th>
+                <th>Modo</th>
+                <th style="cursor:pointer" onclick="sortChatList('estado')">Estado <span id="cs-estado" style="font-size:10px;color:var(--c-muted)">↕</span></th>
+                <th>Motivo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="chat-table-body">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ CHAT DETAIL ══════════════ -->
+    <div id="page-chat-detail" class="page" style="padding:0;">
+      <div style="display:flex;flex-direction:column;height:calc(100vh - 52px);">
+
+        <!-- Topbar -->
+        <div style="padding:12px 20px;border-bottom:1px solid var(--c-border);background:var(--c-cream);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button class="btn btn-ghost" style="font-size:12px;padding:5px 10px;" onclick="nav(document.querySelector('[data-page=chats]'))">← Chats</button>
+            <div id="cd-avatar" style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;"></div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:var(--c-txt)" id="cd-name"></div>
+              <div style="font-size:11px;color:var(--c-muted);font-family:'DM Mono',monospace" id="cd-sub"></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button id="cd-mode-btn" onclick="toggleChatMode()" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all .15s;background:var(--c-green-bg);color:var(--c-green);">
+              <span id="cd-mode-dot" style="width:6px;height:6px;border-radius:50%;background:var(--c-green);display:inline-block"></span>
+              <span id="cd-mode-label">Automático</span>
+            </button>
+            <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px;" id="cd-ficha-btn" onclick="">Ver ficha →</button>
+          </div>
+        </div>
+
+        <!-- Client info bar -->
+        <div style="padding:8px 20px;background:var(--c-blue-bg);border-bottom:1px solid #B8D0EE;flex-shrink:0;display:flex;align-items:center;gap:20px;">
+          <span style="font-size:12px;color:var(--c-navy)" id="cd-info"></span>
+        </div>
+
+        <!-- Messages -->
+        <div id="cd-messages" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px;background:var(--c-warm);"></div>
+
+        <!-- Input -->
+        <div style="padding:12px 20px;border-top:1px solid var(--c-border);background:var(--c-cream);flex-shrink:0;">
+          <div id="cd-auto-notice" style="font-size:11.5px;color:var(--c-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            El bot está respondiendo. Pasá a <strong style="cursor:pointer;text-decoration:underline" onclick="toggleChatMode()">modo manual</strong> para escribir.
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <textarea id="cd-input" rows="1" disabled placeholder="Cambiá a modo manual para escribir..." style="flex:1;resize:none;min-height:42px;max-height:120px;font-family:'Nunito',sans-serif;font-size:13px;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--c-border);background:var(--c-warm2);color:var(--c-txt);outline:none;line-height:1.5;transition:border-color .15s;"></textarea>
+            <button id="cd-send-btn" disabled onclick="sendChatMsg()" style="width:42px;height:42px;border-radius:var(--radius-sm);background:var(--c-terra);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;opacity:.4;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ══════════════ BOT ══════════════ -->
+    <div id="page-bot" class="page">
+      <div class="inner">
+        <div class="ph">
+          <div class="ph-label">Configuración</div>
+          <h1 class="ph-title">Instrucciones del bot</h1>
+          <p class="ph-desc">Configurá cómo se comporta el bot de WhatsApp: tono, contexto de negocio, cuándo derivar a un humano y más.</p>
+        </div>
+
+        <div class="bot-grid">
+
+          <!-- Derivación a humano -->
+          <div class="sec-card" style="margin-top:0">
+            <div class="sec-card-head"><span class="sec-card-title">¿Cuándo derivar a un humano?</span></div>
+            <div class="sec-body">
+              <p style="font-size:12.5px;color:var(--c-txt2);margin-bottom:14px;line-height:1.6">El bot maneja automáticamente los casos simples. Configurá cuándo debe escalar a un operador humano.</p>
+              <div class="setting-row"><div><div class="setting-label">Cliente expresa molestia o enojo</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="setting-row"><div><div class="setting-label">Monto en disputa supera</div></div><div style="display:flex;align-items:center;gap:8px"><input type="text" value="$200.000" style="width:100px;padding:5px 9px;border-radius:5px;border:1px solid var(--c-border);background:var(--c-warm2);font-family:'DM Mono',monospace;font-size:12px;color:var(--c-txt);outline:none"></div></div>
+              <div class="setting-row"><div><div class="setting-label">El cliente menciona un problema legal</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="setting-row"><div><div class="setting-label">Después de N mensajes sin resolución</div></div><select class="setting-select"><option>3 mensajes</option><option selected>5 mensajes</option><option>7 mensajes</option></select></div>
+              <div class="setting-row"><div><div class="setting-label">Fuera del horario comercial</div><div class="setting-desc">El bot avisa que un humano se contactará al próximo día hábil</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+          </div>
+
+          <!-- Tono de conversación -->
+          <div class="sec-card" style="margin-top:0">
+            <div class="sec-card-head"><span class="sec-card-title">Tono de conversación</span></div>
+            <div class="sec-body">
+              <div class="setting-row"><div><div class="setting-label">Personalidad del bot</div></div><select class="setting-select" id="bot-tone" onchange="updateBotPreview()"><option selected>Amigable y profesional</option><option>Formal y directo</option><option>Cercano e informal</option></select></div>
+              <div class="setting-row"><div><div class="setting-label">Nombre del bot</div></div><input type="text" id="bot-name" value="Uma" oninput="updateBotPreview()" style="width:110px;padding:5px 9px;border-radius:5px;border:1px solid var(--c-border);background:var(--c-warm2);font-size:13px;color:var(--c-txt);outline:none;font-family:'Nunito',sans-serif"></div>
+              <div class="setting-row" style="border-bottom:none"><div><div class="setting-label">Idioma</div></div><select class="setting-select"><option selected>Español (Argentina)</option><option>Español (neutro)</option></select></div>
+              <div style="margin-top:16px">
+                <div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--c-muted);margin-bottom:10px">Vista previa</div>
+                <div class="bot-preview" id="bot-preview">
+                  <div style="font-size:10px;color:rgba(255,255,255,.35);margin-bottom:10px;letter-spacing:.5px;text-transform:uppercase">Cliente</div>
+                  <div class="bot-preview-msg">Hola, me llegó un mensaje sobre una deuda. ¿Pueden explicarme?</div>
+                  <div style="font-size:10px;color:rgba(255,255,255,.35);margin:10px 0 4px;letter-spacing:.5px;text-transform:uppercase;text-align:right">Uma</div>
+                  <div class="bot-preview-resp" id="bot-resp-preview">¡Hola! Soy Uma, del equipo de Uma Malta 🌾 Te cuento que registramos un saldo pendiente en tu cuenta. ¿Podemos ayudarte a regularizarlo hoy?</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contexto de negocio -->
+          <div class="sec-card bot-full" style="margin-top:0">
+            <div class="sec-card-head"><span class="sec-card-title">Contexto de negocio y productos</span><span class="sec-card-meta">El bot usa esta info para responder mejor</span></div>
+            <div class="sec-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--c-txt);margin-bottom:7px">Descripción de la empresa</div>
+                  <textarea class="bot-textarea">Uma Malta es una marca de maltas artesanales 100% hechas con cebada argentina, desarrollada específicamente para cerveceros artesanales. Pertenece al grupo Boortmalt.</textarea>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--c-txt);margin-bottom:7px">Política de pagos y crédito</div>
+                  <textarea class="bot-textarea">Los clientes tienen crédito a 30 días. Los ECHEQs deben tener fecha de vencimiento máxima de 60 días. Los pedidos no se aprueban si hay ECHEQs vencidos en cartera.</textarea>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--c-txt);margin-bottom:7px">Instrucción adicional al bot</div>
+                  <textarea class="bot-textarea" placeholder="Ej: Si el cliente pregunta por descuentos, responder que no aplica para cuentas con deuda vencida..."></textarea>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:600;color:var(--c-txt);margin-bottom:7px">Temas que el bot NO debe responder</div>
+                  <textarea class="bot-textarea" placeholder="Ej: precios específicos de productos, condiciones de contratos particulares, información confidencial..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Automatizaciones del bot -->
+          <div class="sec-card" style="margin-top:0">
+            <div class="sec-card-head"><span class="sec-card-title">Automatizaciones activas</span></div>
+            <div class="sec-body">
+              <div class="setting-row"><div><div class="setting-label">Enviar resumen de deuda al iniciar conversación</div><div class="setting-desc">El bot informa el monto y fecha al comenzar</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="setting-row"><div><div class="setting-label">Confirmar pago recibido automáticamente</div><div class="setting-desc">Cuando SAP registra el pago, el bot avisa al cliente</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+              <div class="setting-row"><div><div class="setting-label">Proponer plan de pago si hay mora &gt;30 días</div><div class="setting-desc">El bot puede ofrecer cuotas preaprobadas</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+              <div class="setting-row"><div><div class="setting-label">Avisar vencimiento próximo (7 días antes)</div><div class="setting-desc">Recordatorio preventivo antes del vencimiento del ECHEQ</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+            </div>
+          </div>
+
+          <!-- Tags de temas -->
+          <div class="sec-card" style="margin-top:0">
+            <div class="sec-card-head"><span class="sec-card-title">Temas que el bot puede responder</span></div>
+            <div class="sec-body">
+              <p style="font-size:12px;color:var(--c-txt2);margin-bottom:12px">Activá o desactivá los temas. Los desactivados se derivan siempre a un humano.</p>
+              <div class="bot-tags" id="bot-tags">
+                <button class="bot-tag on" onclick="toggleTag(this)">Estado de cuenta</button>
+                <button class="bot-tag on" onclick="toggleTag(this)">Vencimiento de ECHEQ</button>
+                <button class="bot-tag on" onclick="toggleTag(this)">Instrucciones de pago</button>
+                <button class="bot-tag on" onclick="toggleTag(this)">Confirmación de pago</button>
+                <button class="bot-tag off" onclick="toggleTag(this)">Descuentos</button>
+                <button class="bot-tag off" onclick="toggleTag(this)">Cambio de límite</button>
+                <button class="bot-tag on" onclick="toggleTag(this)">Plazos acordados</button>
+                <button class="bot-tag off" onclick="toggleTag(this)">Reclamos legales</button>
+                <button class="bot-tag on" onclick="toggleTag(this)">Contacto humano</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /bot-grid -->
+
+        <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+          <button class="btn btn-primary" onclick="toast('Configuración del bot guardada')">Guardar configuración</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div><!-- /shell -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Acción completada</span>
+</div>
+
+<script>
+// ── Navigation ───────────────────────────────────────────────────────────────
+function nav(el) {
+  var page = el.dataset.page;
+  document.querySelectorAll('.sb-item').forEach(function(i){ i.classList.remove('active'); });
+  el.classList.add('active');
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
+  document.querySelector('.content').scrollTop = 0;
+}
+
+// ── Client detail (simple inline) ───────────────────────────────────────────
+var CLIENTS = {
+  'el-molino': {
+    chatId:5,
+    name:'Cervecería El Molino', badge:'b-ok', status:'Al día',
+    limitVal:'$500.000', used:'$120.000', avail:'$380.000', pct:24, fill:'ok',
+    days:'22', daysAcorded:'30', delta:'-8 días', deltaColor:'var(--c-green)',
+    alertClass:'', alertMsg:'✓ Cliente con buen comportamiento de pago',
+    cheques:[
+      ['ECH-2026-004812','Hoy 08:30','20/05/2026','$75.000','<span class="badge b-ok">Procesado</span>'],
+      ['ECH-2026-004798','Hoy 07:30','05/05/2026','$120.000','<span class="badge b-ok">Procesado</span>']
+    ],
+    pedidos:[
+      ['#10849','08/04/2026','$75.000','<span class="badge b-ok">Aprobado</span>'],
+      ['#10783','25/03/2026','$45.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'dist-norte': {
+    chatId:1,
+    name:'Distribuidora Norte', badge:'b-warn', status:'En alerta',
+    limitVal:'$800.000', used:'$650.000', avail:'$150.000', pct:81, fill:'warn',
+    days:'38', daysAcorded:'30', delta:'+8 días', deltaColor:'var(--c-amber)',
+    alertClass:'warn', alertMsg:'⚠️ Paga 8 días más tarde de lo acordado · ECHEQ recibido hoy pendiente de registro',
+    cheques:[
+      ['ECH-2026-004821','Hoy 08:14','30/04/2026','$280.000','<span class="badge b-warn">Sin procesar</span>'],
+      ['ECH-2026-004690','01/04/2026','30/04/2026','$180.000','<span class="badge b-ok">Vigente</span>'],
+      ['ECH-2026-004511','10/03/2026','05/04/2026','$120.000','<span class="badge b-red">Vencido</span>']
+    ],
+    pedidos:[
+      ['#10854','10/04/2026','$95.000','<span class="badge b-warn">Pendiente</span><div style="font-size:11px;color:var(--c-amber);margin-top:2px">⚠ ECHEQ vencido en cartera</div>'],
+      ['#10791','28/03/2026','$180.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'bar-esquina': {
+    chatId:2,
+    name:'Bar La Esquina', badge:'b-red', status:'Bloqueado',
+    limitVal:'$300.000', used:'$300.000', avail:'$0', pct:100, fill:'full',
+    days:'52', daysAcorded:'15', delta:'+37 días', deltaColor:'var(--c-red)',
+    alertClass:'red', alertMsg:'🚨 Límite agotado · ECHEQs vencidos · nuevos pedidos rechazados automáticamente',
+    cheques:[
+      ['ECH-2026-004851','Hoy 11:05','05/05/2026','$120.000','<span class="badge b-warn">Sin procesar</span>'],
+      ['ECH-2026-003921','10/02/2026','10/03/2026','$120.000','<span class="badge b-red">Vencido</span>'],
+      ['ECH-2026-003740','20/01/2026','20/02/2026','$100.000','<span class="badge b-red">Vencido</span>']
+    ],
+    pedidos:[
+      ['#10861','11/04/2026','$85.000','<span class="badge b-red">Rechazado</span><div style="font-size:11px;color:var(--c-red);margin-top:2px">🚨 Límite agotado · ECHEQs vencidos</div>'],
+      ['#10744','18/03/2026','$110.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'del-puerto': {
+    chatId:null,
+    name:'Restaurante Del Puerto', badge:'b-ok', status:'Al día',
+    limitVal:'$1.200.000', used:'$200.000', avail:'$1.000.000', pct:17, fill:'ok',
+    days:'40', daysAcorded:'45', delta:'-5 días', deltaColor:'var(--c-green)',
+    alertClass:'', alertMsg:'✓ Cliente con buen comportamiento de pago',
+    cheques:[], pedidos:[
+      ['#10856','09/04/2026','$130.000','<span class="badge b-ok">Aprobado</span>'],
+      ['#10790','27/03/2026','$70.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'bares-bares': {
+    chatId:4,
+    name:'Bares & Bares SA', badge:'b-warn', status:'En alerta',
+    limitVal:'$600.000', used:'$480.000', avail:'$120.000', pct:80, fill:'warn',
+    days:'33', daysAcorded:'30', delta:'+3 días', deltaColor:'var(--c-amber)',
+    alertClass:'warn', alertMsg:'⚠️ Crédito cerca del límite · ECHEQ con plazo fuera de norma',
+    cheques:[
+      ['ECH-2026-004837','Hoy 09:42','20/06/2026 ⚠','$140.000','<span class="badge" style="background:#FFF0E0;color:#A0500A">⚠ Fuera de norma</span>'],
+      ['ECH-2026-004688','01/04/2026','01/05/2026','$220.000','<span class="badge b-ok">Vigente</span>'],
+      ['ECH-2026-004501','15/03/2026','18/04/2026','$140.000','<span class="badge b-warn">Próximo a vencer</span>']
+    ],
+    pedidos:[
+      ['#10858','10/04/2026','$140.000','<span class="badge b-warn">Pendiente</span><div style="font-size:11px;color:var(--c-amber);margin-top:2px">⚠ Excede crédito disponible ($120.000)</div>'],
+      ['#10789','26/03/2026','$95.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'rojas': {
+    chatId:null,
+    name:'Cerveza Artesanal Rojas', badge:'b-ok', status:'Al día',
+    limitVal:'$250.000', used:'$60.000', avail:'$190.000', pct:24, fill:'ok',
+    days:'28', daysAcorded:'30', delta:'-2 días', deltaColor:'var(--c-green)',
+    alertClass:'', alertMsg:'✓ Cliente con buen comportamiento de pago',
+    cheques:[['ECH-2026-004807','Hoy 08:02','08/05/2026','$60.000','<span class="badge b-ok">Procesado</span>']],
+    pedidos:[
+      ['#10852','09/04/2026','$35.000','<span class="badge b-ok">Aprobado</span>'],
+      ['#10780','24/03/2026','$25.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  },
+  'san-martin': {
+    chatId:3,
+    name:'Maltería San Martín', badge:'b-warn', status:'En alerta',
+    limitVal:'$700.000', used:'$476.000', avail:'$224.000', pct:68, fill:'warn',
+    days:'35', daysAcorded:'30', delta:'+5 días', deltaColor:'var(--c-amber)',
+    alertClass:'warn', alertMsg:'⚠️ Pedido #10863 con 3 ECHEQs — cuota 3/3 excede el plazo máximo de 60 días · requiere revisión manual',
+    cheques:[
+      ['ECH-2026-004860','Hoy 10:20','30/04/2026 (cuota 1/3)','$120.000','<span class="badge b-warn">Sin procesar</span>'],
+      ['ECH-2026-004861','Hoy 10:20','15/05/2026 (cuota 2/3)','$95.000','<span class="badge b-warn">Sin procesar</span>'],
+      ['ECH-2026-004862','Hoy 10:20','20/06/2026 (cuota 3/3) ⚠','$85.000','<span class="badge b-red">⚠ Fuera de norma</span>']
+    ],
+    pedidos:[
+      ['#10863','13/04/2026','$300.000','<span class="badge b-warn">Pendiente</span><div style="font-size:11px;color:var(--c-amber);margin-top:2px">⚠ Revisión manual · cuota 3/3 fuera de plazo</div>'],
+      ['#10801','01/04/2026','$176.000','<span class="badge b-ok">Aprobado</span>']
+    ]
+  }
+};
+
+function navDetail(id) {
+  var c = CLIENTS[id];
+  if (!c) return;
+  // Build header
+  var alertHTML = c.alertClass ? '<div class="banner ' + c.alertClass + '" style="margin-top:12px"><span>' + c.alertMsg + '</span></div>' : '<div class="banner" style="margin-top:12px;background:var(--c-green-bg);border:1px solid #A8D9B8;color:var(--c-green)">' + c.alertMsg + '</div>';
+  var fillColor = c.fill === 'full' ? 'var(--c-red)' : c.fill === 'warn' ? 'var(--c-amber)' : 'var(--c-green)';
+  document.getElementById('detail-header-content').innerHTML =
+    '<div style="flex:1"><div style="font-size:10.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--c-muted);margin-bottom:5px">Ficha de cliente</div><div class="detail-name">' + c.name + '</div><div style="margin-bottom:12px"><span class="badge ' + c.badge + '">' + c.status + '</span></div><div class="detail-stats"><div><div class="detail-stat-label">Días acordados</div><div class="detail-stat-val">' + c.daysAcorded + ' días</div></div><div><div class="detail-stat-label">Días prom. real</div><div class="detail-stat-val" style="color:' + c.deltaColor + '">' + c.days + ' días</div></div><div><div class="detail-stat-label">Desvío</div><div class="detail-stat-val" style="color:' + c.deltaColor + '">' + c.delta + '</div></div></div>' + alertHTML + '</div>'
+    + '<div class="credit-block"><div class="credit-bar-lbl"><span>Crédito utilizado</span><span style="color:' + fillColor + ';font-weight:600">' + c.pct + '%</span></div><div class="credit-bar-track"><div class="credit-bar-fill ' + c.fill + '" style="width:' + c.pct + '%;background:' + fillColor + '"></div></div><div class="credit-totals"><span>Usado: ' + c.used + '</span><span>Disponible: ' + c.avail + '</span></div><div style="margin-top:7px;font-size:11px;color:var(--c-muted);font-family:\'DM Mono\',monospace">Límite: ' + c.limitVal + '</div></div>';
+
+  // Build cheques table
+  var chRows = c.cheques.length ? c.cheques.map(function(r){ return '<tr><td class="mono">'+r[0]+'</td><td class="mono" style="font-size:11px">'+r[1]+'</td><td class="mono">'+r[2]+'</td><td class="mono fw">'+r[3]+'</td><td>'+r[4]+'</td></tr>'; }).join('') : '<tr><td colspan="5" class="empty-state">Sin ECHEQs registrados</td></tr>';
+  var pedRows = c.pedidos.map(function(r){ return '<tr><td class="mono">'+r[0]+'</td><td class="mono">'+r[1]+'</td><td class="mono">'+r[2]+'</td><td>'+r[3]+'</td></tr>'; }).join('');
+
+  // Build chat preview section
+  var chatHTML = '';
+  if (c.chatId) {
+    var chat = CHAT_DATA.find(function(x){ return x.id === c.chatId; });
+    if (chat) {
+      var modoColor = chat.modo === 'auto' ? 'var(--c-green)' : 'var(--c-amber)';
+      var modoBg = chat.modo === 'auto' ? 'var(--c-green-bg)' : 'var(--c-amber-bg)';
+      var modoLabel = chat.modo === 'auto' ? '● Automático' : '◐ Manual';
+      var estadoHTML = chat.estado === 'activa'
+        ? '<span class="badge b-warn">Activa</span>'
+        : '<span class="badge b-ok">Resuelta</span>';
+      // Show last 2 messages as preview
+      var previewMsgs = chat.messages.slice(-2);
+      var msgsHTML = previewMsgs.map(function(m){
+        var align = m.from === 'client' ? 'flex-start' : 'flex-end';
+        var bubbleClass = m.from === 'client' ? 'client' : m.from === 'bot' ? 'bot' : m.from === 'error' ? 'error' : 'op';
+        var senderLabel = m.from === 'bot' ? 'Uma (bot)' : m.from === 'op' ? 'Operador' : m.from === 'error' ? '⚠ Error' : '';
+        var senderHTML = m.from !== 'client' ? '<div class="msg-sender ' + bubbleClass + '">' + senderLabel + '</div>' : '';
+        return '<div style="display:flex;flex-direction:column;align-items:' + align + ';">'
+          + senderHTML
+          + '<div class="msg-row ' + bubbleClass + '">'
+          + (m.from === 'client'
+            ? '<div class="msg-bubble client" style="max-width:80%;font-size:12px">' + m.text + '</div><div class="msg-time">' + m.time + '</div>'
+            : '<div class="msg-time">' + m.time + '</div><div class="msg-bubble ' + bubbleClass + '" style="max-width:80%;font-size:12px">' + m.text + '</div>')
+          + '</div></div>';
+      }).join('');
+
+      chatHTML = '<div class="sec-card detail-full" style="margin-top:0">'
+        + '<div class="sec-card-head" style="display:flex;align-items:center;justify-content:space-between;">'
+        + '<div style="display:flex;align-items:center;gap:10px;">'
+        + '<span class="sec-card-title">Última conversación WhatsApp</span>'
+        + estadoHTML
+        + '<span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:' + modoBg + ';color:' + modoColor + '">' + modoLabel + '</span>'
+        + '</div>'
+        + '<span class="sec-card-meta">' + chat.ultimoLabel + ' · ' + chat.mensajes + ' mensajes</span>'
+        + '</div>'
+        + '<div style="padding:14px 18px;background:var(--c-warm);display:flex;flex-direction:column;gap:8px;">'
+        + '<div style="font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--c-muted);margin-bottom:2px">Últimos mensajes — ' + chat.motivo + '</div>'
+        + msgsHTML
+        + '</div>'
+        + '<div style="padding:10px 18px;border-top:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;">'
+        + '<div style="font-size:11px;color:var(--c-muted)">Teléfono: <span class="mono">' + chat.phone + '</span></div>'
+        + '<button class="btn btn-primary" style="padding:5px 14px;font-size:12px;" onclick="openChatDetail(' + chat.id + ')">'
+        + '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+        + ' Ver conversación completa</button>'
+        + '</div></div>';
+    }
+  } else {
+    chatHTML = '<div class="sec-card detail-full" style="margin-top:0">'
+      + '<div class="sec-card-head"><span class="sec-card-title">Conversación WhatsApp</span></div>'
+      + '<div class="empty-state" style="padding:18px">Sin conversaciones registradas con este cliente</div>'
+      + '</div>';
+  }
+
+  document.getElementById('detail-body').innerHTML =
+    '<div class="sec-card" style="margin-top:0"><div class="sec-card-head"><span class="sec-card-title">ECHEQs en cartera</span></div><table><thead><tr><th>N° ECHEQ</th><th>Recibido</th><th>Fecha de pago</th><th>Monto</th><th>Estado</th></tr></thead><tbody>' + chRows + '</tbody></table></div>'
+    + '<div class="sec-card" style="margin-top:0"><div class="sec-card-head"><span class="sec-card-title">Últimos pedidos</span></div><table><thead><tr><th>N° Pedido</th><th>Fecha</th><th>Monto</th><th>Estado</th></tr></thead><tbody>' + pedRows + '</tbody></table></div>'
+    + chatHTML;
+
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-detail').classList.add('active');
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function backToClientes() {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-clientes').classList.add('active');
+  document.querySelector('.content').scrollTop = 0;
+}
+
+// ── ECHEQ dual filter (estado + fecha) ───────────────────────────────────────
+var echeqEstado = 'todos';
+var echeqFecha  = 'mes'; // default: este mes
+
+var FECHA_RANGES = {
+  hoy:    function(d){ return d === '2026-04-13'; },
+  semana: function(d){ return d >= '2026-04-07' && d <= '2026-04-13'; },
+  mes:    function(d){ return d >= '2026-04-01' && d <= '2026-04-30'; },
+  año:    function(d){ return d >= '2026-01-01' && d <= '2026-12-31'; },
+  todos:  function(d){ return true; },
+  custom: null // set dynamically
+};
+
+function filterEstado(f, btn) {
+  echeqEstado = f;
+  document.querySelectorAll('#fb-estado-todos,#fb-pend,#fb-proc').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  applyEcheqFilter();
+}
+
+function filterFecha(f, btn) {
+  echeqFecha = f;
+  document.querySelectorAll('#fb-hoy,#fb-semana,#fb-mes,#fb-año,#fb-custom').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  if (f !== 'custom') document.getElementById('custom-range').style.display = 'none';
+  applyEcheqFilter();
+}
+
+function toggleCustomRange() {
+  var cr = document.getElementById('custom-range');
+  cr.style.display = cr.style.display === 'none' ? 'flex' : 'none';
+  if (cr.style.display === 'flex') {
+    echeqFecha = 'custom';
+    document.querySelectorAll('#fb-hoy,#fb-semana,#fb-mes,#fb-año').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('fb-custom').classList.add('active');
+  }
+}
+
+function applyCustomRange() {
+  var desde = document.getElementById('fecha-desde').value;
+  var hasta = document.getElementById('fecha-hasta').value;
+  if (!desde || !hasta) return;
+  FECHA_RANGES.custom = function(d){ return d >= desde && d <= hasta; };
+  echeqFecha = 'custom';
+  applyEcheqFilter();
+}
+
+function applyEcheqFilter() {
+  var fechaFn = FECHA_RANGES[echeqFecha] || FECHA_RANGES.todos;
+  var visible = 0;
+  document.querySelectorAll('.echeq-row').forEach(function(r){
+    var okEstado = (echeqEstado === 'todos' || r.dataset.f === echeqEstado);
+    var okFecha  = fechaFn(r.dataset.fecha || '');
+    var show = okEstado && okFecha;
+    r.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  var countEl = document.getElementById('echeq-count');
+  if (countEl) countEl.textContent = visible + ' ECHEQs';
+}
+
+// init
+applyEcheqFilter();
+
+// ── Remind ───────────────────────────────────────────────────────────────────
+function remind(btn, name) {
+  btn.classList.add('sent'); btn.textContent = '✓ Enviado'; btn.disabled = true;
+  toast('Recordatorio enviado a ' + name);
+}
+function sendAll(btn) {
+  document.querySelectorAll('.btn-remind:not(.sent)').forEach(function(b){
+    b.classList.add('sent'); b.textContent = '✓ Enviado'; b.disabled = true;
+  });
+  toast('Recordatorios enviados a todos los clientes con deuda');
+}
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// ── Bot preview ──────────────────────────────────────────────────────────────
+var BOT_RESPONSES = {
+  'Amigable y profesional': '¡Hola! Soy {name}, del equipo de Uma Malta 🌾 Te cuento que registramos un saldo pendiente en tu cuenta. ¿Podemos ayudarte a regularizarlo hoy?',
+  'Formal y directo': 'Buenos días. Le informamos que registramos un saldo vencido en su cuenta con Uma Malta. Le solicitamos regularizar su situación a la brevedad.',
+  'Cercano e informal': '¡Hola! 👋 Te escribo desde Uma Malta. Vimos que tenés un saldo pendiente — ¿te puedo dar una mano para arreglarlo?'
+};
+function updateBotPreview() {
+  var tone = document.getElementById('bot-tone').value;
+  var name = document.getElementById('bot-name').value || 'Uma';
+  var resp = (BOT_RESPONSES[tone] || BOT_RESPONSES['Amigable y profesional']).replace('{name}', name);
+  document.getElementById('bot-resp-preview').textContent = resp;
+}
+
+// ── Toggle tag ───────────────────────────────────────────────────────────────
+function toggleTag(btn) {
+  btn.classList.toggle('on'); btn.classList.toggle('off');
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+
+// ▸ CHART 1: Aging Buckets (horizontal stacked bars per client)
+(function(){
+  var agingData = [
+    { name:'Bar La Esquina',       aldia:0,    d1_30:0,      d31_60:180000, d60plus:120000, limit:300000 },
+    { name:'Dist. Norte',          aldia:370000,d1_30:160000, d31_60:0,      d60plus:120000, limit:800000 },
+    { name:'Maltería San Martín',  aldia:196000,d1_30:195000, d31_60:85000,  d60plus:0,      limit:700000 },
+    { name:'Bares & Bares SA',     aldia:120000,d1_30:220000, d31_60:140000, d60plus:0,      limit:600000 },
+    { name:'Rest. Del Puerto',     aldia:200000,d1_30:0,      d31_60:0,      d60plus:0,      limit:1200000 },
+    { name:'Cerv. El Molino',      aldia:120000,d1_30:0,      d31_60:0,      d60plus:0,      limit:500000 },
+    { name:'Cerv. Art. Rojas',     aldia:60000, d1_30:0,      d31_60:0,      d60plus:0,      limit:250000 },
+  ];
+  var colors = { aldia:'#4B9C45', d1_30:'#F19F20', d31_60:'#AA7059', d60plus:'#721210' };
+  var container = document.getElementById('aging-chart');
+  if (!container) return;
+
+  agingData.forEach(function(c) {
+    var total = c.aldia + c.d1_30 + c.d31_60 + c.d60plus;
+    var maxRef = Math.max(total, c.limit);
+    var pctUsed = Math.round((total / c.limit) * 100);
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+
+    // Client name
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'width:130px;flex-shrink:0;font-size:12px;font-weight:600;color:#1E2A42;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    lbl.textContent = c.name;
+
+    // Bar track
+    var track = document.createElement('div');
+    track.style.cssText = 'flex:1;height:22px;background:#EDE0D2;border-radius:4px;overflow:hidden;display:flex;position:relative;';
+
+    var segments = [
+      { val:c.aldia, color:colors.aldia },
+      { val:c.d1_30, color:colors.d1_30 },
+      { val:c.d31_60,color:colors.d31_60 },
+      { val:c.d60plus,color:colors.d60plus }
+    ];
+    segments.forEach(function(s){
+      if (s.val <= 0) return;
+      var seg = document.createElement('div');
+      var w = Math.max((s.val / c.limit) * 100, 2);
+      seg.style.cssText = 'height:100%;background:'+s.color+';transition:width .3s;';
+      seg.style.width = w + '%';
+      seg.title = '$' + (s.val/1000).toFixed(0) + 'k';
+      track.appendChild(seg);
+    });
+
+    // Pct + amount label
+    var info = document.createElement('div');
+    info.style.cssText = 'width:90px;flex-shrink:0;font-family:"DM Mono",monospace;font-size:11px;color:#5C4840;text-align:left;';
+    var pctColor = pctUsed >= 90 ? '#721210' : pctUsed >= 70 ? '#F19F20' : '#4B9C45';
+    info.innerHTML = '<span style="font-weight:700;color:'+pctColor+'">'+pctUsed+'%</span> <span style="color:#989898">$'+(total/1000).toFixed(0)+'k</span>';
+
+    row.appendChild(lbl);
+    row.appendChild(track);
+    row.appendChild(info);
+    container.appendChild(row);
+  });
+})();
+
+
+// ▸ CHART 2: DSO Trend — cartera + clientes problemáticos (canvas line chart)
+(function(){
+  var canvas = document.getElementById('dso-chart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var dpr = window.devicePixelRatio || 1;
+  var rect = canvas.parentElement.getBoundingClientRect();
+  var W = rect.width; var H = 220;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  var months = ['Nov 25','Dic 25','Ene 26','Feb 26','Mar 26','Abr 26'];
+  // Main line: portfolio average
+  var dsoAvg = [48, 45, 42, 40, 44, 38];
+  // Per-client lines (problematic clients)
+  var clientLines = [
+    { name:'Bar La Esquina',      vals:[30, 35, 40, 48, 55, 52], color:'#721210', opacity:0.4 },
+    { name:'Dist. Norte',         vals:[32, 34, 36, 38, 40, 38], color:'#F19F20', opacity:0.4 },
+    { name:'Maltería San Martín', vals:[28, 30, 32, 30, 36, 35], color:'#163B61', opacity:0.4 },
+  ];
+  var target = 30;
+  var industryAvg = 42;
+
+  var padL = 44, padR = 24, padT = 20, padB = 32;
+  var chartW = W - padL - padR;
+  var chartH = H - padT - padB;
+  var minY = 15, maxY = 60;
+  var rangeY = maxY - minY;
+
+  function yPos(v){ return padT + chartH - ((v - minY) / rangeY) * chartH; }
+  function xPos(i){ return padL + (i / (months.length - 1)) * chartW; }
+
+  // Grid lines + Y labels
+  ctx.strokeStyle = '#DDD0C0'; ctx.lineWidth = 1;
+  [20,30,40,50,60].forEach(function(v){
+    var y = yPos(v);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.fillStyle = '#989898'; ctx.font = '10px "DM Mono", monospace'; ctx.textAlign = 'right';
+    ctx.fillText(v + 'd', padL - 8, y + 3);
+  });
+
+  // X labels
+  ctx.fillStyle = '#989898'; ctx.font = '10px "DM Mono", monospace'; ctx.textAlign = 'center';
+  months.forEach(function(m, i){ ctx.fillText(m, xPos(i), H - 8); });
+
+  // Industry avg line (dashed, very subtle)
+  ctx.save();
+  ctx.setLineDash([4,4]); ctx.strokeStyle = 'rgba(152,152,152,.25)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(padL, yPos(industryAvg)); ctx.lineTo(W-padR, yPos(industryAvg)); ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = 'rgba(152,152,152,.35)'; ctx.font = '500 9px "Nunito", sans-serif'; ctx.textAlign = 'right';
+  ctx.fillText('Industria 42d', W - padR, yPos(industryAvg) - 5);
+
+  // Target line (dashed green)
+  ctx.save();
+  ctx.setLineDash([6,4]); ctx.strokeStyle = 'rgba(75,156,69,.30)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(padL, yPos(target)); ctx.lineTo(W-padR, yPos(target)); ctx.stroke();
+  ctx.restore();
+  ctx.fillStyle = 'rgba(75,156,69,.45)'; ctx.font = '600 9px "Nunito", sans-serif'; ctx.textAlign = 'right';
+  ctx.fillText('Objetivo 30d', W - padR, yPos(target) - 5);
+
+  // ── Client lines (thin, semi-transparent, drawn FIRST so main line is on top)
+  clientLines.forEach(function(cl){
+    ctx.save();
+    ctx.strokeStyle = cl.color; ctx.globalAlpha = cl.opacity;
+    ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath();
+    cl.vals.forEach(function(v, i){
+      var x = xPos(i), y = yPos(v);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    // Small dots
+    cl.vals.forEach(function(v, i){
+      ctx.beginPath(); ctx.arc(xPos(i), yPos(v), 2.5, 0, Math.PI*2);
+      ctx.fillStyle = cl.color; ctx.fill();
+    });
+    // End label (client name)
+    var lastIdx = cl.vals.length - 1;
+    ctx.fillStyle = cl.color; ctx.globalAlpha = 0.55;
+    ctx.font = '500 9px "Nunito", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(cl.name, xPos(lastIdx) + 8, yPos(cl.vals[lastIdx]) + 3);
+    ctx.restore();
+  });
+
+  // ── Main DSO line (thick, prominent — drawn on top of everything)
+  // Area fill first
+  ctx.save();
+  ctx.beginPath();
+  dsoAvg.forEach(function(v, i){
+    var x = xPos(i), y = yPos(v);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(xPos(dsoAvg.length - 1), padT + chartH);
+  ctx.lineTo(xPos(0), padT + chartH);
+  ctx.closePath();
+  var grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+  grad.addColorStop(0, 'rgba(169,112,89,.12)');
+  grad.addColorStop(1, 'rgba(169,112,89,.01)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.restore();
+
+  // Main line stroke
+  ctx.strokeStyle = '#AA7059'; ctx.lineWidth = 3.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  dsoAvg.forEach(function(v, i){
+    var x = xPos(i), y = yPos(v);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Main dots + value labels
+  dsoAvg.forEach(function(v, i){
+    var x = xPos(i), y = yPos(v);
+    // Outer dot
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#AA7059'; ctx.fill();
+    // Inner dot
+    ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI*2);
+    ctx.fillStyle = '#F0E6D8'; ctx.fill();
+    // Value label (bold, bigger)
+    ctx.fillStyle = '#1E2A42'; ctx.font = '700 12px "DM Mono", monospace'; ctx.textAlign = 'center';
+    ctx.fillText(v + 'd', x, y - 11);
+  });
+
+  // "Promedio cartera" label at end of main line
+  var lastAvgIdx = dsoAvg.length - 1;
+  ctx.fillStyle = '#AA7059'; ctx.font = '700 10px "Nunito", sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText('Promedio cartera', xPos(lastAvgIdx) + 10, yPos(dsoAvg[lastAvgIdx]) + 3);
+})();
+
+
+// ▸ CHART 3: Cash Flow — Cobrado vs Esperado (canvas, grouped bars)
+(function(){
+  var canvas = document.getElementById('cashflow-chart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var dpr = window.devicePixelRatio || 1;
+  var rect = canvas.parentElement.getBoundingClientRect();
+  var W = rect.width; var H = 200;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  var data = [
+    { label:'Nov 25', esperado:380, cobrado:380, vencido:0,   tipo:'pasado' },
+    { label:'Dic 25', esperado:520, cobrado:520, vencido:0,   tipo:'pasado' },
+    { label:'Ene 26', esperado:500, cobrado:460, vencido:40,  tipo:'pasado' },
+    { label:'Feb 26', esperado:490, cobrado:410, vencido:80,  tipo:'pasado' },
+    { label:'Mar 26', esperado:640, cobrado:218, vencido:422, tipo:'pasado' },
+    { label:'Abr 26', esperado:675, cobrado:0,   vencido:220, tipo:'actual' },
+    { label:'May 26', esperado:680, cobrado:0,   vencido:0,   tipo:'futuro' },
+    { label:'Jun 26', esperado:520, cobrado:0,   vencido:0,   tipo:'futuro' },
+  ];
+
+  var maxVal = 0;
+  data.forEach(function(d){ if (d.esperado > maxVal) maxVal = d.esperado; });
+  maxVal = Math.ceil(maxVal / 100) * 100; // round up to nearest 100
+
+  var padL = 50, padR = 20, padT = 24, padB = 36;
+  var chartW = W - padL - padR;
+  var chartH = H - padT - padB;
+  var n = data.length;
+  var slotW = chartW / n;
+  var barW = Math.min(slotW * 0.32, 36);
+  var gap = Math.max(barW * 0.15, 3);
+
+  function yPos(v){ return padT + chartH - (v / maxVal) * chartH; }
+  function slotX(i){ return padL + slotW * i + slotW / 2; }
+
+  // Grid lines
+  ctx.strokeStyle = '#DDD0C0'; ctx.lineWidth = 1;
+  var gridSteps = [0, 200, 400, 600, 800];
+  gridSteps.forEach(function(v){
+    if (v > maxVal) return;
+    var y = yPos(v);
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.fillStyle = '#989898'; ctx.font = '10px "DM Mono", monospace'; ctx.textAlign = 'right';
+    ctx.fillText('$' + v + 'k', padL - 8, y + 3);
+  });
+
+  // Baseline
+  ctx.strokeStyle = '#DDD0C0'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(padL, yPos(0)); ctx.lineTo(W - padR, yPos(0)); ctx.stroke();
+
+  // X labels
+  ctx.textAlign = 'center';
+  data.forEach(function(d, i){
+    ctx.fillStyle = d.tipo === 'actual' ? '#1E2A42' : '#989898';
+    ctx.font = (d.tipo === 'actual' ? '700 ' : '') + '10px "DM Mono", monospace';
+    ctx.fillText(d.label, slotX(i), H - 10);
+  });
+
+  // "Hoy" marker line
+  var todayIdx = data.findIndex(function(d){ return d.tipo === 'actual'; });
+  if (todayIdx >= 0) {
+    var tx = slotX(todayIdx) - slotW * 0.42;
+    ctx.save();
+    ctx.strokeStyle = '#1E2A42'; ctx.lineWidth = 2;
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(tx, padT - 4); ctx.lineTo(tx, yPos(0) + 4); ctx.stroke();
+    ctx.fillStyle = '#1E2A42'; ctx.font = '700 9px "Nunito", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('HOY', tx, padT - 8);
+    ctx.restore();
+  }
+
+  // Draw bars for each month
+  data.forEach(function(d, i){
+    var cx = slotX(i);
+
+    if (d.tipo === 'futuro') {
+      // Future: single dashed-outline bar for expected
+      var bx = cx - barW * 0.5;
+      var by = yPos(d.esperado);
+      var bh = yPos(0) - by;
+      ctx.save();
+      ctx.setLineDash([4,3]);
+      ctx.strokeStyle = '#AA7059'; ctx.lineWidth = 2;
+      roundRect(ctx, bx, by, barW, bh, 4);
+      ctx.stroke();
+      // Light fill
+      ctx.fillStyle = 'rgba(170,112,89,.08)';
+      roundRect(ctx, bx, by, barW, bh, 4);
+      ctx.fill();
+      ctx.restore();
+      // Value label
+      ctx.fillStyle = '#AA7059'; ctx.font = '600 10px "DM Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('$' + d.esperado + 'k', cx, by - 7);
+      return;
+    }
+
+    if (d.tipo === 'actual') {
+      // Current month: show vencido (red solid) + expected (dashed outline)
+      // Vencido bar
+      if (d.vencido > 0) {
+        var vx = cx - barW - gap/2;
+        var vy = yPos(d.vencido);
+        var vh = yPos(0) - vy;
+        ctx.fillStyle = '#721210';
+        roundRect(ctx, vx, vy, barW, vh, 4); ctx.fill();
+        ctx.fillStyle = '#721210'; ctx.font = '700 10px "DM Mono", monospace'; ctx.textAlign = 'center';
+        ctx.fillText('$' + d.vencido + 'k', vx + barW/2, vy - 7);
+      }
+      // Expected (dashed)
+      var ex = cx + gap/2;
+      var ey = yPos(d.esperado);
+      var eh = yPos(0) - ey;
+      ctx.save();
+      ctx.setLineDash([4,3]); ctx.strokeStyle = '#AA7059'; ctx.lineWidth = 2;
+      roundRect(ctx, ex, ey, barW, eh, 4); ctx.stroke();
+      ctx.fillStyle = 'rgba(170,112,89,.08)';
+      roundRect(ctx, ex, ey, barW, eh, 4); ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = '#AA7059'; ctx.font = '600 10px "DM Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('$' + d.esperado + 'k', ex + barW/2, ey - 7);
+      return;
+    }
+
+    // Past months: cobrado (green) + vencido (red) side by side
+    if (d.vencido > 0) {
+      // Two bars
+      var gx = cx - barW - gap/2;
+      var gy = yPos(d.cobrado);
+      var gh = yPos(0) - gy;
+      ctx.fillStyle = '#4B9C45';
+      roundRect(ctx, gx, gy, barW, gh, 4); ctx.fill();
+
+      var rx = cx + gap/2;
+      var ry = yPos(d.vencido);
+      var rh = yPos(0) - ry;
+      ctx.fillStyle = '#721210';
+      roundRect(ctx, rx, ry, barW, rh, 4); ctx.fill();
+
+      // Combined value
+      var totalVal = d.cobrado + d.vencido;
+      ctx.fillStyle = '#1E2A42'; ctx.font = '600 10px "DM Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('$' + totalVal + 'k', cx, Math.min(gy, ry) - 7);
+    } else {
+      // Single green bar
+      var sx = cx - barW * 0.5;
+      var sy = yPos(d.cobrado);
+      var sh = yPos(0) - sy;
+      ctx.fillStyle = '#4B9C45';
+      roundRect(ctx, sx, sy, barW, sh, 4); ctx.fill();
+      // Value
+      ctx.fillStyle = '#1E2A42'; ctx.font = '600 10px "DM Mono", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('$' + d.cobrado + 'k', cx, sy - 7);
+    }
+  });
+
+  // Rounded rect helper
+  function roundRect(c, x, y, w, h, r) {
+    if (h < r * 2) r = h / 2;
+    c.beginPath();
+    c.moveTo(x + r, y);
+    c.lineTo(x + w - r, y);
+    c.quadraticCurveTo(x + w, y, x + w, y + r);
+    c.lineTo(x + w, y + h);
+    c.lineTo(x, y + h);
+    c.lineTo(x, y + r);
+    c.quadraticCurveTo(x, y, x + r, y);
+    c.closePath();
+  }
+})();
+
+  // ── Bot mode toggle ─────────────────────────────────────────────────────────
+  var BOT_MODES = {
+    auto:   { label:'Automático',   color:'var(--c-green)',  bg:'var(--c-green-bg)', desc:'El bot responde y gestiona conversaciones de forma autónoma.' },
+    manual: { label:'Modo manual',  color:'var(--c-amber)',  bg:'var(--c-amber-bg)', desc:'El bot escala todas las conversaciones a un operador humano.' },
+    off:    { label:'Bot apagado',  color:'var(--c-red)',    bg:'var(--c-red-bg)',   desc:'El bot está inactivo. Todas las conversaciones quedan sin respuesta automática.' }
+  };
+  var currentBotMode = 'auto';
+
+  function setBotMode(mode) {
+    if (mode === 'off' && currentBotMode !== 'manual') {
+      toast('Primero pasá a modo manual antes de apagar el bot');
+      return;
+    }
+    if (mode === 'off') {
+      if (!confirm('¿Seguro que querés apagar el bot? Las conversaciones activas quedarán sin respuesta automática.')) return;
+    }
+    currentBotMode = mode;
+    var m = BOT_MODES[mode];
+    // Update badge
+    var badge = document.getElementById('bot-mode-badge');
+    var desc  = document.getElementById('bot-mode-desc');
+    if (badge) {
+      badge.style.background = m.bg;
+      badge.style.color = m.color;
+      badge.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:' + m.color + ';display:inline-block"></span> ' + m.label;
+    }
+    if (desc) desc.textContent = m.desc;
+    // Reset all pill buttons to inactive state
+    var btnAuto   = document.getElementById('btn-bot-auto');
+    var btnManual = document.getElementById('btn-bot-manual');
+    var btnOff    = document.getElementById('btn-bot-off');
+    var allBtns = [btnAuto, btnManual, btnOff];
+    allBtns.forEach(function(b){
+      if (!b) return;
+      b.style.fontWeight = '500';
+      b.style.background = 'transparent';
+      b.style.color = 'var(--c-muted)';
+      b.style.borderColor = 'var(--c-border)';
+      b.style.opacity = '1';
+      b.disabled = false;
+    });
+    // Highlight active pill
+    var colors = { auto: ['var(--c-green)','var(--c-green-bg)'], manual: ['var(--c-amber)','var(--c-amber-bg)'], off: ['var(--c-red)','var(--c-red-bg)'] };
+    var activeBtn = mode === 'auto' ? btnAuto : mode === 'manual' ? btnManual : btnOff;
+    if (activeBtn && colors[mode]) {
+      activeBtn.style.fontWeight = '700';
+      activeBtn.style.color = colors[mode][0];
+      activeBtn.style.background = colors[mode][1];
+      activeBtn.style.borderColor = colors[mode][0];
+    }
+    // Apagar only enabled when in manual
+    if (btnOff && mode !== 'manual') {
+      btnOff.disabled = true;
+      btnOff.style.opacity = '0.38';
+      btnOff.style.cursor = 'default';
+    }
+    toast('Bot: ' + m.label);
+  }
+  // Init: disable off button by default
+  // init handled by inline disabled + opacity on button
+
+
+  // ── Client table sort ────────────────────────────────────────────────────
+  var sortState = { col: null, asc: true };
+
+  function sortClientes(col) {
+    var tbody = document.querySelector('#page-clientes table tbody');
+    if (!tbody) return;
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+
+    // Toggle direction if same col
+    if (sortState.col === col) {
+      sortState.asc = !sortState.asc;
+    } else {
+      sortState.col = col;
+      sortState.asc = (col === 'nombre'); // alpha default asc; numbers default desc
+    }
+
+    // Reset all icons
+    ['nombre','utilizado','disponible','dias','estado'].forEach(function(c) {
+      var el = document.getElementById('sort-icon-' + c);
+      if (el) { el.textContent = '↕'; el.style.color = 'var(--c-muted)'; }
+    });
+    // Set active icon
+    var icon = document.getElementById('sort-icon-' + col);
+    if (icon) { icon.textContent = sortState.asc ? '↑' : '↓'; icon.style.color = 'var(--c-terra)'; }
+
+    rows.sort(function(a, b) {
+      var av, bv;
+      if (col === 'nombre') {
+        av = a.dataset.nombre || ''; bv = b.dataset.nombre || '';
+        return sortState.asc ? av.localeCompare(bv) : bv.localeCompare(av);
+      } else if (col === 'estado') {
+        // 3=bloqueado first when desc, 1=ok first when asc
+        av = parseInt(a.dataset.estado || 0);
+        bv = parseInt(b.dataset.estado || 0);
+      } else {
+        av = parseFloat(a.dataset[col] || 0);
+        bv = parseFloat(b.dataset[col] || 0);
+      }
+      return sortState.asc ? av - bv : bv - av;
+    });
+
+    rows.forEach(function(r){ tbody.appendChild(r); });
+  }
+
+
+
+  // ══════════════════════════════════════════════════════════════
+  // CHAT DATA & LOGIC
+  // ══════════════════════════════════════════════════════════════
+  var CHAT_DATA = [
+    {
+      id:1, clientKey:'dist-norte', cliente:'Distribuidora Norte', empresa:'Distribuidora Norte S.A.',
+      phone:'+54 9 11 3321-4455', initials:'DN', color:'#AA7059',
+      mensajes:4, ultimoTs:202604131042, ultimoLabel:'Hoy 10:42',
+      modo:'auto', estado:'activa', motivo:'Deuda vencida',
+      hasError:false, unread:2,
+      lastMsg:'Sí, lo voy a regularizar esta semana.',
+      messages:[
+        {from:'bot',  text:'¡Hola! Soy Uma 🌾 Registramos un saldo vencido de $120.000 en tu cuenta. ¿Podemos ayudarte a regularizarlo?', time:'10:15'},
+        {from:'client',text:'Hola, si lo sé. Tuve unos problemas este mes pero lo estoy resolviendo.', time:'10:38'},
+        {from:'bot',  text:'Entendemos. ¿Podés darnos una fecha estimada de pago?', time:'10:39'},
+        {from:'client',text:'Sí, lo voy a regularizar esta semana.', time:'10:42'},
+      ]
+    },
+    {
+      id:2, clientKey:'bar-esquina', cliente:'Bar La Esquina', empresa:'Bar La Esquina SRL',
+      phone:'+54 9 351 555-7788', initials:'LE', color:'#721210',
+      mensajes:4, ultimoTs:202604121800, ultimoLabel:'Ayer 09:22',
+      modo:'manual', estado:'activa', motivo:'ECHEQ rebotado',
+      hasError:false, unread:0,
+      lastMsg:'Ok, mañana lo depositamos.',
+      messages:[
+        {from:'bot',  text:'Hola, soy Uma. Notamos que tenés 2 ECHEQs vencidos por $220.000. Regularizá tu situación para habilitar nuevos pedidos.', time:'09:00'},
+        {from:'client',text:'El cheque rebotó porque nos cambiaron la cuenta. Mándame los datos para hacer una transferencia.', time:'09:15'},
+        {from:'op',   text:'Hola! CBU: 0070123430004005296300 · Alias: UMAMALTA.PAGO · Monto: $220.000', time:'09:18'},
+        {from:'client',text:'Ok, mañana lo depositamos.', time:'09:22'},
+      ]
+    },
+    {
+      id:3, clientKey:'san-martin', cliente:'Maltería San Martín', empresa:'Maltería San Martín S.A.',
+      phone:'+54 9 11 6677-8899', initials:'SM', color:'#163B61',
+      mensajes:4, ultimoTs:202604130955, ultimoLabel:'Hoy 09:55',
+      modo:'auto', estado:'activa', motivo:'ECHEQ fuera de norma',
+      hasError:false, unread:1,
+      lastMsg:'Entendido, ya hablo con mi contador.',
+      messages:[
+        {from:'bot',  text:'Buen día. El pedido #10863 tiene un ECHEQ (cuota 3/3) con vencimiento el 20/06/2026, que excede el plazo máximo de 60 días.', time:'09:40'},
+        {from:'client',text:'¿Qué opciones tengo?', time:'09:50'},
+        {from:'bot',  text:'Podés reemplazar ese ECHEQ por uno con vencimiento antes del 14/06/2026, o coordinar un plan de pago alternativo.', time:'09:52'},
+        {from:'client',text:'Entendido, ya hablo con mi contador.', time:'09:55'},
+      ]
+    },
+    {
+      id:4, clientKey:'bares-bares', cliente:'Bares & Bares SA', empresa:'Bares & Bares S.A.',
+      phone:'+54 9 11 4433-2211', initials:'BB', color:'#F19F20',
+      mensajes:5, ultimoTs:202604111540, ultimoLabel:'Abr 11 15:40',
+      modo:'auto', estado:'resuelta', motivo:'Pedido pendiente',
+      hasError:true, unread:0,
+      lastMsg:'Perfecto, gracias por avisar.',
+      messages:[
+        {from:'bot',  text:'Tu pedido #10858 por $140.000 excede tu crédito disponible ($120.000). ¿Querés ajustar el pedido o realizar un pago?', time:'15:20'},
+        {from:'client',text:'¿Cuánto crédito me queda?', time:'15:35'},
+        {from:'error',text:'⚠ Error de automatización — N8N no pudo consultar el saldo en SAP (timeout). Reintentando en 5 min.', time:'15:35'},
+        {from:'bot',  text:'Tu crédito disponible es $120.000 sobre un límite de $600.000. El pedido supera eso en $20.000.', time:'15:41'},
+        {from:'client',text:'Perfecto, gracias por avisar.', time:'15:40'},
+      ]
+    },
+    {
+      id:5, clientKey:'el-molino', cliente:'Cervecería El Molino', empresa:'El Molino S.R.L.',
+      phone:'+54 9 11 2244-6688', initials:'EM', color:'#4B9C45',
+      mensajes:2, ultimoTs:202604081015, ultimoLabel:'Abr 08 10:15',
+      modo:'auto', estado:'resuelta', motivo:'Recordatorio preventivo',
+      hasError:false, unread:0,
+      lastMsg:'Dale, muchas gracias!',
+      messages:[
+        {from:'bot',  text:'Hola, soy Uma 🌾 Tu ECHEQ ECH-2026-004798 por $120.000 vence el 05/05/2026. Solo un recordatorio preventivo, estás todo bien 👍', time:'10:00'},
+        {from:'client',text:'Dale, muchas gracias!', time:'10:15'},
+      ]
+    },
+  ];
+
+  var chatSortState = {col:null, asc:true};
+  var chatFilter = 'todos';
+  var chatSearch = '';
+  var currentChatId = null;
+
+  // ── Render table ──────────────────────────────────────────────
+  function renderChatTable() {
+    var rows = CHAT_DATA.filter(function(c){
+      var okFilter = chatFilter==='todos'
+        || (chatFilter==='auto'   && c.modo==='auto')
+        || (chatFilter==='manual' && c.modo==='manual')
+        || (chatFilter==='error'  && c.hasError);
+      var okSearch = !chatSearch
+        || c.cliente.toLowerCase().includes(chatSearch)
+        || c.empresa.toLowerCase().includes(chatSearch)
+        || c.phone.includes(chatSearch);
+      return okFilter && okSearch;
+    });
+
+    if (chatSortState.col) {
+      var col = chatSortState.col;
+      rows.sort(function(a,b){
+        var av = col==='cliente' ? a.cliente : col==='mensajes' ? a.mensajes : col==='ultimo' ? a.ultimoTs : col==='estado' ? (a.estado==='activa'?0:1) : 0;
+        var bv = col==='cliente' ? b.cliente : col==='mensajes' ? b.mensajes : col==='ultimo' ? b.ultimoTs : col==='estado' ? (b.estado==='activa'?0:1) : 0;
+        if (typeof av === 'string') return chatSortState.asc ? av.localeCompare(bv) : bv.localeCompare(av);
+        return chatSortState.asc ? av-bv : bv-av;
+      });
+    }
+
+    var tbody = document.getElementById('chat-table-body');
+    var count = document.getElementById('chat-list-count');
+    if (!tbody) return;
+    if (count) count.textContent = rows.length + ' conversaciones';
+    tbody.innerHTML = '';
+    rows.forEach(function(c){
+      var modoColor = c.modo==='auto' ? 'var(--c-green)' : 'var(--c-amber)';
+      var modoBg    = c.modo==='auto' ? 'var(--c-green-bg)' : 'var(--c-amber-bg)';
+      var modoLabel = c.modo==='auto' ? '● Automático' : '◐ Manual';
+      var estadoHtml = c.estado==='activa'
+        ? '<span class="badge b-warn">Activa</span>'
+        : '<span class="badge b-ok">Resuelta</span>';
+      var errorHtml = c.hasError
+        ? '<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--c-red-bg);color:var(--c-red)">⚠ Error N8N</span>'
+        : '<span style="font-size:12px;color:var(--c-muted)">—</span>';
+      var unreadHtml = c.unread
+        ? '<span style="margin-left:4px;width:16px;height:16px;border-radius:50%;background:var(--c-terra);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">' + c.unread + '</span>'
+        : '';
+      var tr = document.createElement('tr');
+      tr.style.cursor = 'pointer';
+      tr.onclick = function(){ openChatDetail(c.id); };
+      tr.innerHTML =
+        '<td><div style="display:flex;align-items:center;gap:9px;">'
+        + '<div style="width:32px;height:32px;border-radius:50%;background:'+c.color+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;flex-shrink:0;">'+c.initials+'</div>'
+        + '<span class="fw">' + c.cliente + unreadHtml + '</span></div></td>'
+        + '<td style="font-size:12px;color:var(--c-txt2)">' + c.empresa + '</td>'
+        + '<td class="mono" style="font-size:11.5px">' + c.phone + '</td>'
+        + '<td class="mono" style="text-align:center">' + c.mensajes + '</td>'
+        + '<td class="mono" style="font-size:11.5px">' + c.ultimoLabel + '</td>'
+        + '<td><span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:'+modoBg+';color:'+modoColor+'">'+modoLabel+'</span></td>'
+        + '<td>' + estadoHtml + '</td>'
+        + '<td style="font-size:12px;color:var(--c-txt2)">' + c.motivo + ' ' + errorHtml + '</td>'
+        + '<td><button class="btn-link" onclick="event.stopPropagation();openChatDetail('+c.id+')">Ver chat →</button></td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  function filterChatList(f, btn, search) {
+    if (f !== null) {
+      chatFilter = f;
+      document.querySelectorAll('#page-chats .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+      if (btn) btn.classList.add('active');
+    }
+    if (search !== undefined) chatSearch = search.toLowerCase();
+    renderChatTable();
+  }
+
+  function sortChatList(col) {
+    if (chatSortState.col === col) chatSortState.asc = !chatSortState.asc;
+    else { chatSortState.col = col; chatSortState.asc = col==='cliente'; }
+    ['cliente','mensajes','ultimo','estado'].forEach(function(c){
+      var el = document.getElementById('cs-'+c);
+      if (el) { el.textContent='↕'; el.style.color='var(--c-muted)'; }
+    });
+    var icon = document.getElementById('cs-'+col);
+    if (icon) { icon.textContent = chatSortState.asc ? '↑' : '↓'; icon.style.color='var(--c-terra)'; }
+    renderChatTable();
+  }
+
+  // ── Open chat detail ──────────────────────────────────────────
+  function openChatDetail(id) {
+    var c = CHAT_DATA.find(function(x){ return x.id===id; });
+    if (!c) return;
+    currentChatId = id;
+    c.unread = 0;
+    renderChatTable();
+
+    // Navigate to detail page
+    document.querySelectorAll('.sb-item').forEach(function(i){ i.classList.remove('active'); });
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('page-chat-detail').classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+
+    // Fill header
+    var av = document.getElementById('cd-avatar');
+    av.style.background = c.color; av.textContent = c.initials;
+    document.getElementById('cd-name').textContent = c.cliente;
+    document.getElementById('cd-sub').textContent  = c.phone + ' · ' + c.empresa;
+    document.getElementById('cd-info').innerHTML   =
+      '<strong>' + c.empresa + '</strong> &nbsp;·&nbsp; ' + c.phone +
+      ' &nbsp;·&nbsp; Motivo: <strong>' + c.motivo + '</strong>' +
+      ' &nbsp;·&nbsp; <a href="#" onclick="navDetail(\'' + c.clientKey + '\');return false;" style="color:var(--c-navy);font-weight:600;">Ver ficha de crédito →</a>';
+    var fichaBtn = document.getElementById('cd-ficha-btn');
+    if (fichaBtn) fichaBtn.onclick = function(){ navDetail(c.clientKey); };
+
+    // Mode
+    updateChatDetailMode(c.modo);
+
+    // Messages
+    var msgs = document.getElementById('cd-messages');
+    msgs.innerHTML = '';
+    c.messages.forEach(function(m){ renderChatMsg(m.from, m.text, m.time); });
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function renderChatMsg(from, text, time) {
+    var msgs = document.getElementById('cd-messages');
+    var wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;flex-direction:column;align-items:' + (from==='client'?'flex-start':'flex-end') + ';';
+    if (from !== 'client') {
+      var sl = document.createElement('div');
+      sl.className = 'msg-sender ' + from;
+      sl.textContent = from==='bot' ? 'Uma (bot)' : from==='op' ? 'Operador' : '⚠ Error de automatización';
+      wrapper.appendChild(sl);
+    }
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + from;
+    var bubble = document.createElement('div');
+    bubble.className = 'msg-bubble ' + from;
+    bubble.textContent = text;
+    var t = document.createElement('div');
+    t.className = 'msg-time'; t.textContent = time;
+    if (from==='client') { row.appendChild(bubble); row.appendChild(t); }
+    else { row.appendChild(t); row.appendChild(bubble); }
+    wrapper.appendChild(row);
+    msgs.appendChild(wrapper);
+  }
+
+  function updateChatDetailMode(mode) {
+    var btn   = document.getElementById('cd-mode-btn');
+    var dot   = document.getElementById('cd-mode-dot');
+    var lbl   = document.getElementById('cd-mode-label');
+    var input = document.getElementById('cd-input');
+    var send  = document.getElementById('cd-send-btn');
+    var notice= document.getElementById('cd-auto-notice');
+    var isManual = mode==='manual';
+    var color = isManual ? 'var(--c-amber)' : 'var(--c-green)';
+    var bg    = isManual ? 'var(--c-amber-bg)' : 'var(--c-green-bg)';
+    if (btn) { btn.style.background=bg; btn.style.color=color; btn.style.borderColor=bg; }
+    if (dot) dot.style.background = color;
+    if (lbl) lbl.textContent = isManual ? 'Modo manual' : 'Automático';
+    if (input) { input.disabled=!isManual; input.placeholder=isManual?'Escribí un mensaje (Enter para enviar)...':'Cambiá a modo manual para escribir...'; }
+    if (send) { send.disabled=!isManual; send.style.opacity=isManual?'1':'0.4'; }
+    if (notice) notice.style.display = isManual ? 'none' : 'flex';
+  }
+
+  function toggleChatMode() {
+    var c = CHAT_DATA.find(function(x){ return x.id===currentChatId; });
+    if (!c) return;
+    c.modo = c.modo==='auto' ? 'manual' : 'auto';
+    updateChatDetailMode(c.modo);
+    toast('Conversación en modo ' + (c.modo==='manual' ? 'manual — podés escribir' : 'automático — el bot retoma'));
+  }
+
+  function sendChatMsg() {
+    var input = document.getElementById('cd-input');
+    var text = input ? input.value.trim() : '';
+    if (!text) return;
+    var c = CHAT_DATA.find(function(x){ return x.id===currentChatId; });
+    var time = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+    renderChatMsg('op', text, time);
+    if (c) { c.messages.push({from:'op',text:text,time:time}); c.lastMsg=text; c.ultimoLabel='Ahora'; }
+    input.value = '';
+    document.getElementById('cd-messages').scrollTop = 99999;
+  }
+
+  document.addEventListener('keydown', function(e){
+    var input = document.getElementById('cd-input');
+    if (e.target===input && e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendChatMsg(); }
+  });
+
+  // Init
+  renderChatTable();
+
+</script>
+
+</body>
+</html>
