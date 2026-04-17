@@ -813,13 +813,8 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
     </div>
   </div>
   <div class="topbar-right">
-    <span class="topbar-meta">Datos de ejemplo · Prototipo v1</span>
     <span class="proto-badge">Prototipo</span>
-    <div class="topbar-user">
-      <div class="topbar-user-avatar" id="topbar-avatar">AC</div>
-      <span id="topbar-username" style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-      <button class="topbar-logout" onclick="doLogout()">Cerrar sesión</button>
-    </div>
+    <button class="topbar-logout" onclick="doLogout()">Cerrar sesión</button>
   </div>
 </header>
 
@@ -868,10 +863,10 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
     </div>
     <div class="sb-footer">
       <div class="sb-user">
-        <div class="sb-avatar">AC</div>
+        <div class="sb-avatar" id="sb-avatar">?</div>
         <div>
-          <div class="sb-uname">Alejandro Corvella</div>
-          <div class="sb-urole">Product Owner · Uma Malta</div>
+          <div class="sb-uname" id="sb-uname"></div>
+          <div class="sb-urole" id="sb-urole"></div>
         </div>
       </div>
     </div>
@@ -1712,8 +1707,9 @@ function showApp(session) {
   shell.style.display = 'flex';
   shell.classList.add('authenticated');
   var initials = (session.name || session.email).split(' ').map(function(w){ return w[0]; }).slice(0,2).join('').toUpperCase();
-  document.getElementById('topbar-avatar').textContent = initials;
-  document.getElementById('topbar-username').textContent = session.name || session.email;
+  document.getElementById('sb-avatar').textContent = initials;
+  document.getElementById('sb-uname').textContent = session.name || session.email;
+  document.getElementById('sb-urole').textContent = session.email !== session.name ? session.email : '';
   // render charts now that the shell is visible
   setTimeout(function() { drawDSOChart(); drawCashflowChart(); }, 50);
 }
