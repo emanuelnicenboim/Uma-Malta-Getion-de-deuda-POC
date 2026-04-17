@@ -158,7 +158,7 @@ body {
 
 /* hide text labels when collapsed */
 .sb-item .sb-label { transition:opacity .15s; }
-.sidebar.collapsed .sb-item .sb-label { opacity:0; width:0; overflow:hidden; }
+.sidebar.collapsed .sb-item .sb-label { display:none; }
 
 .sb-badge {
   margin-left:auto;
@@ -168,7 +168,7 @@ body {
   transition:opacity .15s;
   flex-shrink:0;
 }
-.sidebar.collapsed .sb-badge { opacity:0; width:0; padding:0; overflow:hidden; }
+.sidebar.collapsed .sb-badge { display:none; }
 .sb-badge.red { background:var(--c-red); color:white; }
 .sb-badge.amber { background:var(--c-amber); color:white; }
 .sb-badge.terra { background:var(--c-terra); color:white; }
