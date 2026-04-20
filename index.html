@@ -1694,14 +1694,27 @@ var SESSION_TTL = 8 * 60 * 60 * 1000; // 8 horas
 function getSession() {
   try {
     var s = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-    if (!s) return null;
+    if (!s) return getSessionMemory();
     if (Date.now() - s.ts > SESSION_TTL) { localStorage.removeItem(SESSION_KEY); return null; }
     return s;
-  } catch(e) { return null; }
+  } catch(e) { return getSessionMemory(); }
 }
 
+var _sessionMemory = null;
 function saveSession(user) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify({ email:user.email, name:user.name, ts:Date.now() }));
+  var data = JSON.stringify({ email:user.email, name:user.name, ts:Date.now() });
+  _sessionMemory = data;
+  try { localStorage.setItem(SESSION_KEY, data); } catch(e) {}
+}
+
+function getSessionMemory() {
+  if (_sessionMemory) {
+    try {
+      var s = JSON.parse(_sessionMemory);
+      if (s && Date.now() - s.ts <= SESSION_TTL) return s;
+    } catch(e) {}
+  }
+  return null;
 }
 
 function initAuth() {
