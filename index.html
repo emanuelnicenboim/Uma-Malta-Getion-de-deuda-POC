@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Uma Malta · Panel de Crédito</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ── TOKENS (alineados con brandbook Uma Malta) ── */
@@ -34,7 +36,7 @@
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { font-size:14px; }
+html { font-size:16px; }
 body {
   font-family:'Nunito',sans-serif;
   background:var(--c-cream);
@@ -112,7 +114,7 @@ body {
 .sidebar.collapsed .sb-toggle { justify-content:center; padding:10px 0 4px; }
 .sb-toggle-btn {
   background:none; border:none; cursor:pointer;
-  color:rgba(255,255,255,.35); padding:4px; border-radius:5px;
+  color:rgba(255,255,255,.6); padding:4px; border-radius:5px;
   display:flex; align-items:center; justify-content:center;
   transition:color .15s, background .15s;
   flex-shrink:0;
@@ -121,7 +123,7 @@ body {
 
 .sb-section {
   font-size:10px; font-weight:700; letter-spacing:1.8px;
-  text-transform:uppercase; color:rgba(255,255,255,.25);
+  text-transform:uppercase; color:rgba(255,255,255,.5);
   padding:20px 18px 7px;
   white-space:nowrap; overflow:hidden;
   transition:opacity .15s, padding .22s;
@@ -130,14 +132,17 @@ body {
 
 .sb-item {
   display:flex; align-items:center; gap:9px;
-  padding:9px 18px;
+  padding:9px 18px; width:100%;
   font-size:13px; font-weight:500;
+  font-family:'Nunito',sans-serif;
   color:rgba(255,255,255,.52);
   cursor:pointer;
+  background:none; border:none;
   border-left:3px solid transparent;
   transition:all .15s;
   user-select:none;
   white-space:nowrap; overflow:hidden;
+  text-align:left;
 }
 .sidebar.collapsed .sb-item {
   padding:9px 0;
@@ -726,6 +731,54 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   animation:spin .6s linear infinite;
 }
 @keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── Accessibility: keyboard focus ── */
+.sb-item:focus-visible {
+  outline:2px solid var(--c-terra);
+  outline-offset:-2px;
+}
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline:2px solid var(--c-terra);
+  outline-offset:2px;
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Password toggle ── */
+.pass-wrap { position:relative; }
+.pass-toggle {
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  background:none; border:none; cursor:pointer; padding:4px;
+  color:var(--c-muted); display:flex; align-items:center;
+  transition:color .15s;
+}
+.pass-toggle:hover { color:var(--c-txt); }
+
+/* ── Responsive breakpoints ── */
+@media (max-width:1024px) {
+  .cards-4 { grid-template-columns:repeat(2,1fr); }
+  .bot-grid { grid-template-columns:1fr; }
+  .detail-grid { grid-template-columns:1fr; }
+}
+@media (max-width:768px) {
+  .inner { padding:16px 12px 40px; }
+  .cards-4, .cards-3, .cards-2 { grid-template-columns:1fr 1fr; }
+  .shell { flex-direction:column; }
+  .sidebar { width:100% !important; height:auto; flex-direction:row; overflow-x:auto; overflow-y:hidden; }
+  .sidebar.collapsed { width:100% !important; height:48px; }
+  .topbar { padding:0 14px; }
+  .ph-title { font-size:20px; }
+}
+@media (max-width:480px) {
+  .cards-4, .cards-3, .cards-2 { grid-template-columns:1fr; }
+}
 </style>
 </head>
 <body>
@@ -743,14 +796,19 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
       <div class="auth-title">Bienvenido</div>
       <div class="auth-sub">Ingresá para acceder al panel de crédito</div>
       <div class="auth-field">
-        <label>Email</label>
-        <input id="login-email" class="auth-input" type="email" placeholder="admin@demo.com" autocomplete="email">
-        <div class="auth-error" id="login-email-err">Ingresá un email válido</div>
+        <label for="login-email">Email</label>
+        <input id="login-email" class="auth-input" type="email" placeholder="admin@demo.com" autocomplete="email" style="touch-action:manipulation">
+        <div class="auth-error" id="login-email-err" role="alert">Ingresá un email válido</div>
       </div>
       <div class="auth-field">
-        <label>Contraseña</label>
-        <input id="login-pass" class="auth-input" type="password" placeholder="••••••••••" autocomplete="current-password">
-        <div class="auth-error" id="login-pass-err">La contraseña es requerida</div>
+        <label for="login-pass">Contraseña</label>
+        <div class="pass-wrap">
+          <input id="login-pass" class="auth-input" type="password" placeholder="••••••••••" autocomplete="current-password" style="padding-right:38px;touch-action:manipulation">
+          <button type="button" class="pass-toggle" onclick="togglePass('login-pass',this)" aria-label="Mostrar contraseña" tabindex="0">
+            <svg id="login-pass-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="auth-error" id="login-pass-err" role="alert">La contraseña es requerida</div>
       </div>
       <div class="auth-error" id="login-cred-err" style="margin-bottom:10px">Email o contraseña incorrectos</div>
       <button class="auth-btn" id="login-btn" onclick="doLogin()">
@@ -764,19 +822,24 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
       <div class="auth-title">Crear cuenta</div>
       <div class="auth-sub">Registrate para acceder al panel</div>
       <div class="auth-field">
-        <label>Nombre completo</label>
-        <input id="reg-name" class="auth-input" type="text" placeholder="Tu nombre">
-        <div class="auth-error" id="reg-name-err">El nombre es requerido</div>
+        <label for="reg-name">Nombre completo</label>
+        <input id="reg-name" class="auth-input" type="text" placeholder="Tu nombre" style="touch-action:manipulation">
+        <div class="auth-error" id="reg-name-err" role="alert">El nombre es requerido</div>
       </div>
       <div class="auth-field">
-        <label>Email</label>
-        <input id="reg-email" class="auth-input" type="email" placeholder="tu@email.com">
-        <div class="auth-error" id="reg-email-err">Ingresá un email válido</div>
+        <label for="reg-email">Email</label>
+        <input id="reg-email" class="auth-input" type="email" placeholder="tu@email.com" style="touch-action:manipulation">
+        <div class="auth-error" id="reg-email-err" role="alert">Ingresá un email válido</div>
       </div>
       <div class="auth-field">
-        <label>Contraseña</label>
-        <input id="reg-pass" class="auth-input" type="password" placeholder="Mínimo 6 caracteres">
-        <div class="auth-error" id="reg-pass-err">Mínimo 6 caracteres</div>
+        <label for="reg-pass">Contraseña</label>
+        <div class="pass-wrap">
+          <input id="reg-pass" class="auth-input" type="password" placeholder="Mínimo 6 caracteres" style="padding-right:38px;touch-action:manipulation">
+          <button type="button" class="pass-toggle" onclick="togglePass('reg-pass',this)" aria-label="Mostrar contraseña" tabindex="0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="auth-error" id="reg-pass-err" role="alert">Mínimo 6 caracteres</div>
       </div>
       <button class="auth-btn" id="reg-btn" onclick="doRegister()">
         <span id="reg-btn-label">Crear cuenta</span>
@@ -795,7 +858,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
 <!-- SESSION EXPIRED -->
 <div id="session-expired">
   <div class="expired-card">
-    <div class="expired-icon">🔒</div>
+    <div class="expired-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--c-terra)" stroke-width="1.5" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div class="expired-title">Sesión expirada</div>
     <div class="expired-sub">Tu sesión cerró por inactividad. Ingresá nuevamente para continuar.</div>
     <button class="auth-btn" onclick="goToLogin()">Volver al login</button>
@@ -825,43 +888,43 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
   <!-- SIDEBAR -->
   <nav class="sidebar" id="sidebar">
     <div class="sb-toggle">
-      <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Colapsar menú">
+      <button class="sb-toggle-btn" onclick="toggleSidebar()" title="Colapsar menú" aria-label="Colapsar menú lateral" id="sb-toggle-btn">
         <svg id="sb-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
       </button>
     </div>
     <div class="sb-section">Principal</div>
-    <div class="sb-item active" data-page="dashboard" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <button class="sb-item active" data-page="dashboard" onclick="nav(this)" title="Dashboard" aria-label="Dashboard">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       <span class="sb-label">Dashboard</span>
-    </div>
-    <div class="sb-item" data-page="clientes" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </button>
+    <button class="sb-item" data-page="clientes" onclick="nav(this)" title="Clientes" aria-label="Clientes">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="sb-label">Clientes</span>
-    </div>
-    <div class="sb-item" data-page="echeqs" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    </button>
+    <button class="sb-item" data-page="echeqs" onclick="nav(this)" title="ECHEQs" aria-label="ECHEQs">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <span class="sb-label">ECHEQs</span>
       <span class="sb-badge amber">3</span>
-    </div>
+    </button>
     <div class="sb-hr"></div>
     <div class="sb-section">Cobranzas</div>
-    <div class="sb-item" data-page="deuda" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    <button class="sb-item" data-page="deuda" onclick="nav(this)" title="Gestión de deuda" aria-label="Gestión de deuda">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
       <span class="sb-label">Gestión de deuda</span>
       <span class="sb-badge red">3</span>
-    </div>
+    </button>
     <div class="sb-hr"></div>
     <div class="sb-section">WhatsApp</div>
-    <div class="sb-item" data-page="chats" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <button class="sb-item" data-page="chats" onclick="nav(this)" title="Historial de chats" aria-label="Historial de chats">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <span class="sb-label">Historial de chats</span>
-    </div>
+    </button>
     <div class="sb-hr"></div>
     <div class="sb-section">Configuración</div>
-    <div class="sb-item" data-page="bot" onclick="nav(this)">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V3"/><circle cx="12" cy="3" r="1"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg>
+    <button class="sb-item" data-page="bot" onclick="nav(this)" title="Instrucciones del bot" aria-label="Instrucciones del bot">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M12 11V3"/><circle cx="12" cy="3" r="1"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/></svg>
       <span class="sb-label">Instrucciones del bot</span>
-    </div>
+    </button>
     <div class="sb-footer" style="position:relative;">
       <div class="sb-user" id="sb-user-trigger" onclick="toggleUserMenu()" style="cursor:pointer;border-radius:6px;padding:4px 6px;margin:-4px -6px;transition:background .15s;" onmouseenter="this.style.background='rgba(255,255,255,.06)'" onmouseleave="this.style.background='transparent'">
         <div class="sb-avatar" id="sb-avatar">?</div>
@@ -910,9 +973,9 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
             </div>
             <div style="font-size:12px;color:var(--c-txt2);margin-bottom:10px;line-height:1.4" id="bot-mode-desc">El bot responde y gestiona conversaciones de forma autónoma.</div>
             <div style="display:flex;gap:5px;margin-top:2px;">
-              <button id="btn-bot-auto" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--c-green);background:var(--c-green-bg);color:var(--c-green);transition:all .15s;" onclick="setBotMode('auto')">● Auto</button>
-              <button id="btn-bot-manual" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-txt2);transition:all .15s;" onclick="setBotMode('manual')">◐ Manual</button>
-              <button id="btn-bot-off" style="flex:1;padding:5px 6px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-muted);opacity:0.45;transition:all .15s;" onclick="setBotMode('off')" disabled>○ Apagar</button>
+              <button id="btn-bot-auto" style="flex:1;min-height:36px;padding:6px 8px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--c-green);background:var(--c-green-bg);color:var(--c-green);transition:all .15s;" onclick="setBotMode('auto')" aria-label="Modo automático">● Auto</button>
+              <button id="btn-bot-manual" style="flex:1;min-height:36px;padding:6px 8px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-txt2);transition:all .15s;" onclick="setBotMode('manual')" aria-label="Modo manual">◐ Manual</button>
+              <button id="btn-bot-off" style="flex:1;min-height:36px;padding:6px 8px;border-radius:20px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--c-border);background:transparent;color:var(--c-muted);opacity:0.45;transition:all .15s;" onclick="setBotMode('off')" disabled aria-label="Apagar bot (no disponible)">○ Apagar</button>
             </div>
           </div>
         </div>
@@ -958,7 +1021,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
               <!-- Alert 1 -->
               <div onclick="navDetail('bar-esquina')" style="cursor:pointer;background:var(--c-red-bg);border:1px solid #E8A0A0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
                 <div style="display:flex;align-items:flex-start;gap:7px;">
-                  <span style="font-size:14px;flex-shrink:0">🚨</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--c-red)" stroke-width="2" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                   <div>
                     <div style="font-size:12px;font-weight:700;color:var(--c-red)">Bar La Esquina</div>
                     <div style="font-size:11px;color:var(--c-red);opacity:.85;margin-top:2px;line-height:1.4">Límite agotado · 2 ECHEQs vencidos · pedidos bloqueados</div>
@@ -969,7 +1032,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
               <!-- Alert 2 -->
               <div onclick="navDetail('dist-norte')" style="cursor:pointer;background:var(--c-amber-bg);border:1px solid #E8C570;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
                 <div style="display:flex;align-items:flex-start;gap:7px;">
-                  <span style="font-size:14px;flex-shrink:0">⚠️</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                   <div>
                     <div style="font-size:12px;font-weight:700;color:var(--c-amber)">Distribuidora Norte</div>
                     <div style="font-size:11px;color:var(--c-amber);opacity:.85;margin-top:2px;line-height:1.4">ECHEQ vencido · crédito al 81% · paga 8 días tarde</div>
@@ -980,7 +1043,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
               <!-- Alert 3 -->
               <div onclick="navDetail('san-martin')" style="cursor:pointer;background:var(--c-amber-bg);border:1px solid #E8C570;border-radius:var(--radius-sm);padding:10px 12px;transition:opacity .15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
                 <div style="display:flex;align-items:flex-start;gap:7px;">
-                  <span style="font-size:14px;flex-shrink:0">⚠️</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--c-amber)" stroke-width="2" style="flex-shrink:0;margin-top:1px" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                   <div>
                     <div style="font-size:12px;font-weight:700;color:var(--c-amber)">Maltería San Martín</div>
                     <div style="font-size:11px;color:var(--c-amber);opacity:.85;margin-top:2px;line-height:1.4">Pedido #10863 · ECHEQ cuota 3/3 excede 60 días</div>
@@ -1043,7 +1106,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
             <div style="font-size:11px;color:var(--c-muted);margin-top:2px">Promedio general de toda la cartera + clientes que más impactan · últimos 6 meses</div>
           </div>
           <div style="padding:18px 24px 14px;">
-            <canvas id="dso-chart" style="width:100%;height:220px;"></canvas>
+            <canvas id="dso-chart" style="width:100%;height:220px;" aria-label="Gráfico de días promedio de cobro (DSO) - tendencia de los últimos 6 meses" role="img"></canvas>
           </div>
           <div style="padding:8px 24px 14px;border-top:1px solid var(--c-border);display:flex;gap:18px;flex-wrap:wrap;align-items:center;">
             <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--c-muted);margin-right:4px;">Referencias:</div>
@@ -1065,7 +1128,7 @@ tbody td { padding:12px 18px; font-size:13px; vertical-align:middle; }
             <div style="font-size:11px;color:var(--c-muted);margin-top:2px">Monto cobrado efectivamente cada mes vs. monto que se esperaba cobrar · los meses futuros muestran la proyección según ECHEQs en cartera</div>
           </div>
           <div style="padding:20px 24px 14px;">
-            <canvas id="cashflow-chart" style="width:100%;height:200px;"></canvas>
+            <canvas id="cashflow-chart" style="width:100%;height:200px;" aria-label="Gráfico de cobros mensuales: real vs esperado" role="img"></canvas>
           </div>
           <div style="padding:8px 24px 14px;border-top:1px solid var(--c-border);display:flex;gap:18px;flex-wrap:wrap;align-items:center;">
             <div style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--c-muted);margin-right:4px;">Referencias:</div>
@@ -1891,12 +1954,27 @@ initAuth();
 function toggleSidebar() {
   var sb = document.getElementById('sidebar');
   var icon = document.getElementById('sb-toggle-icon');
+  var btn = document.getElementById('sb-toggle-btn');
   var collapsed = sb.classList.toggle('collapsed');
   if (collapsed) {
     icon.innerHTML = '<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>';
+    btn.setAttribute('aria-label', 'Expandir menú lateral');
+    btn.setAttribute('title', 'Expandir menú');
   } else {
     icon.innerHTML = '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
+    btn.setAttribute('aria-label', 'Colapsar menú lateral');
+    btn.setAttribute('title', 'Colapsar menú');
   }
+}
+
+function togglePass(inputId, btn) {
+  var input = document.getElementById(inputId);
+  var isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  btn.setAttribute('aria-label', isPass ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  btn.querySelector('svg').innerHTML = isPass
+    ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
